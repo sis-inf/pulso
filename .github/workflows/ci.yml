@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  validar-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar descripción del PR
+        run: |
+          if [ -z "${{ github.event.pull_request.body }}" ]; then
+            echo "El PR debe tener descripción"
+            exit 1
+          fi
+          echo "✅ PR tiene descripción"
+
+      - name: Verificar que referencia un issue
+        run: |
+          if ! echo "${{ github.event.pull_request.body }}" | grep -qi "closes #\|fixes #\|refs #"; then
+            echo "El PR debe referenciar un issue con 'Closes #N'"
+            exit 1
+          fi
+          echo "✅ PR referencia un issue"

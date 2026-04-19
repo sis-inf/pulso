@@ -1,0 +1,5 @@
+# Glosario
+
+| Término | Definición |
+|---|---|
+| | |

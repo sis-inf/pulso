@@ -1,0 +1,14 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Cada proyecto define sus pasos aquí
+      - name: Deploy
+        run: echo "Definir pasos de despliegue"

@@ -1,0 +1,47 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Dependencias
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+*.pyo
+
+# Build / compilación
+dist/
+build/
+out/
+target/
+*.o
+*.exe
+*.dll
+*.so
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Cobertura de tests
+coverage/
+.coverage
+htmlcov/
+
+# Datos sensibles
+*.pem
+*.key
+*.cert
