@@ -79,19 +79,31 @@ security/analisis-dependencias
 ```
 
 ### 6. Trabaja y haz commits pequeños
+*"Un cambio, un commit".*
+
+Trabajar con commits permite tener "Checkpoints" y mantener un historial del trabajo que haz realizado. Normalmente llevan una descripcion corta tal y como se muestra en el ejemplo de abajo. 
+
+La descripcion del commit debe ser de forma imperativa y concisa: *"docs: actualizar guía de instalación", "fix: corregir error en validación de usuario"*, entre otros.
+
+El commit debe responder a la pregunta: *"¿Qué hace este cambio?"*
 ```bash
 git add .
 git commit -m "tipo: descripción corta en presente"
 ```
-
+Para saber de que *tipo* debes realizar el commit revisa el apartado de [convencion de commits](#convención-de-commits).
 ### 7. Sube tu rama a tu fork
 ```bash
 git push origin tipo/descripcion-corta
 ```
 
 ### 8. Abre un Pull Request
-- Base: `sis-inf/PROYECTO` → rama `dev`
-- Compare: `TU-USUARIO/PROYECTO` → tu rama
+1. Ve a tu Fork en GitHub, aquel repositorio que está en tu cuenta personal.
+2. Click en el banner de color amarillo: "Compare & pull request"
+   En caso de que no aparezca: 
+     * Dirígete a la pestaña `Pull Requests`-> `New Pull Request`
+3. Verifica el  destino del PR
+   - Base repository: `sis-inf/pulso` → base `dev`
+   - Head repository: `TU-USUARIO/pulso` → compare `tu-rama`
 
 ---
 
