@@ -93,7 +93,7 @@ git commit -m "tipo: descripción corta en presente"
 Para saber de que *tipo* debes realizar el commit revisa el apartado de [convención de commits](#convención-de-commits).
 ### 7. Sube tu rama a tu fork
 
-***tipo/descripcion-corta = el nombre de la rama donde trabajastes***
+***tipo/descripcion-corta = el nombre de la rama donde trabajaste.***
 ```bash
 git push origin tipo/descripcion-corta
 ```
