@@ -2,29 +2,18 @@
 
 | Término | Definición |
 |---|---|
-| Agente    | Programa ligero que se instala en un servidor para recolectar métricas y enviarlas al sistema Pulso. |
-| Buffer    | Espacio temporal de memoria usado para almacenar datos antes de ser procesados o transmitidos. |
-| CMake     | Herramienta de configuración utilizada en Pulso para gestionar la compilación del código fuente. |
-| Compilación | Proceso de transformar el código fuente de Pulso en ejecutables que pueden correr en servidores. |
-| CPU       | Unidad central de procesamiento; Pulso mide su uso para detectar sobrecargas. |
-| Daemon    | Proceso que corre en segundo plano en un sistema operativo, como los agentes de Pulso. |
-| Endpoint  | Dirección de red (URL o IP) que Pulso monitorea para verificar disponibilidad. |
-| Latencia  | Tiempo que tarda un paquete en viajar desde el origen al destino; Pulso la mide para evaluar rendimiento. |
-| Métrica   | Valor cuantitativo recolectado por Pulso (ej. uso de CPU, memoria, latencia). |
-| Ping      | Comando usado por Pulso para verificar si un servidor responde en la red. |
-| Proceso   | Programa en ejecución dentro de un sistema operativo; Pulso puede monitorear su estado. |
-| Socket    | Punto de comunicación entre procesos o entre un servidor y la red. |
-| Throughput | Cantidad de datos procesados o transmitidos en un tiempo determinado; Pulso lo mide para evaluar capacidad. |
-| Umbral    | Valor límite definido en Pulso para generar alertas cuando una métrica lo supera. |
-| Uptime    | Tiempo que un servidor o servicio ha estado disponible sin interrupciones. |
-| Alerta    | Notificación generada por Pulso cuando una métrica supera un umbral definido. |
-| Dashboard | Interfaz visual de Pulso donde se muestran métricas, gráficos y alertas en tiempo real. |
-| Escalamiento | Acción de aumentar recursos (CPU, memoria, instancias) cuando Pulso detecta sobrecarga. |
-| Infraestructura | Conjunto de servidores, redes y servicios que Pulso monitorea para asegurar disponibilidad. |
-| Log       | Registro de eventos o mensajes generados por el sistema Pulso, que pueden ser analizados para detectar fallos. |
-| Monitor   | Componente de Pulso que observa métricas específicas y genera reportes o alertas. |
-| Notificación | Mensaje enviado por Pulso para informar sobre un evento crítico. |
-| Rendimiento | Medida de eficiencia del sistema Pulso, se lo evalúa mediante métricas como latencia y throughput. |
-| Servicio  | Aplicación o proceso que Pulso monitorea para verificar disponibilidad y estabilidad. |
-| Tráfico   | Cantidad de datos que circulan por la red; Pulso lo mide para detectar congestión. |
-| Usuario   | Persona que interactúa con Pulso para configurar métricas, visualizar dashboards o recibir alertas. |
+| Argumento de lineas de comandos | Valor o instruccion que se pasa al programa al momento de ejecutar desde la terminal |
+| Build | Proceso de compilar y enlazar el código fuente de Pulso para generar el ejecutable final |
+| CMake | Herramienta multiplataforma para gestionar el proceso de construcción del proyecto. Genera los archivos necesarios para compilar Pulso en distintos sistemas operativos y entornos de desarrollo |
+| Compilador | Programa que traduce el código fuente escrito en C++ a código máquina ejecutable |
+| Directorio de build | Carpeta separada del código fuente donde CMake genera los archivos de compilación |
+| Estado del sistema | Conjunto de métricas que describe la situación actual del hardware y los procesos en ejecución |
+| Flag | Opción que se le pasa al compilador para modificar su comportamiento, como activar optimizaciones o seleccionar el estándar de C++ a usar durante la construcción de Pulso|
+| GCC (GNU Compiler Collection) | Compilador de código abierto compatible con C++ y soportado por Pulso en sistemas Linux y macOS|
+| MSVC (Microsoft Visual C++) | Compilador de C++ de Microsoft, compatible con Pulso en sistemas Windows |
+| Memoria RAM | Memoria de acceso aleatorio del sistema. Pulso monitorea su uso total, la cantidad utilizada y la disponible para informar el estado de los recursos de memoria |
+| Núcleo (Core) | Unidad de procesamiento individual dentro de una CPU. Pulso reporta la cantidad de núcleos activos como parte del monitoreo del procesador |
+| Red | Infraestructura de comunicación del sistema. Pulso monitorea la velocidad de descarga, la velocidad de subida | 
+| Proceso | Instancia de un programa en ejecución dentro del sistema operativo. Pulso informa la cantidad de procesos activos como parte del resumen del estado del sistema |
+| Rendimiento | Capacidad del sistema o del programa para ejecutar tareas de manera rápida y eficiente. Pulso está diseñado con un enfoque en alto rendimiento gracias al uso de C++ |
+| Sistema Operativo | Software base que administra los recursos del hardware. Pulso es compatible con Windows, Linux y macOS, y adapta su monitoreo según el sistema donde se ejecuta |
