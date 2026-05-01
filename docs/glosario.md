@@ -17,4 +17,3 @@
 | Proceso | Instancia de un programa en ejecución dentro del sistema operativo. Pulso informa la cantidad de procesos activos como parte del resumen del estado del sistema |
 | Rendimiento | Capacidad del sistema o del programa para ejecutar tareas de manera rápida y eficiente. Pulso está diseñado con un enfoque en alto rendimiento gracias al uso de C++ |
 | Sistema Operativo | Software base que administra los recursos del hardware. Pulso es compatible con Windows, Linux y macOS, y adapta su monitoreo según el sistema donde se ejecuta |
-
