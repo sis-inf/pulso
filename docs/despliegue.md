@@ -2,22 +2,22 @@
 
 ## Prerrequisitos
 
+- Sistema operativo: Linux, Windows o macOS  
+- Compilador C++ (g++)  
+- Git instalado  
+
+---
+
 ## Entornos
 
 ### Local
 ```bash
-# Pasos para correr localmente
-```
+# Clonar repositorio
+git clone https://github.com/sis-inf/pulso.git
+cd pulso
 
-### Producción
-```bash
-# Pasos para despliegue en producción
-```
+# Compilar
+g++ -o pulso main.cpp
 
-## Variables de entorno
-
-| Variable | Descripción | Ejemplo |
-|---|---|---|
-| | | |
-
-## Solución de problemas comunes
+# Ejecutar
+./pulso
