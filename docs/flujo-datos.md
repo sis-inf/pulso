@@ -42,5 +42,11 @@ Los datos se muestran al usuario.
 
 ---
 
-## Diagrama
-Recolección → Procesamiento → Almacenamiento → Visualización
+## Diagrama del flujo de datos
+
+```mermaid
+flowchart TD
+    A[Recolección de datos] --> B[Procesamiento]
+    B --> C[Almacenamiento en memoria]
+    C --> D[Visualización]
+```
