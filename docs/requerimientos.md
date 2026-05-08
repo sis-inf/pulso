@@ -28,9 +28,19 @@ Los siguientes requerimientos definen las restricciones técnicas y de calidad b
 | **RNF-005** | **Disponibilidad** | El sistema debe garantizar un tiempo de actividad (Uptime) del 99.9% para no perder métricas críticas. | Media |
 | **RNF-006** | **Seguridad** | Los datos transmitidos entre el agente y el servidor deben estar cifrados mediante TLS 1.2 o superior. | Media |
 | **RNF-007** | **Escalabilidad** | El agente debe poder ejecutarse en arquitecturas de procesador x86_64 y ARM64. | Baja |
+| **RNF-008** | Rendimiento | El sistema debe responder en menos de **500ms** al consultar métricas de CPU y memoria en tablas de hasta 10,000 registros. | Alta |
+| **RNF-009** | Portabilidad | El agente debe ser compatible con **Windows 10/11, Linux Kernel 5.4+ y macOS 12+**. | Alta |
+| **RNF-010** | Seguridad | El sistema debe acceder a métricas de bajo nivel (ej. `/proc`) únicamente con permisos adecuados y cifrar la transmisión con **TLS 1.2+**. | Alta |
+| **RNF-011** | Mantenibilidad | La cobertura de pruebas unitarias debe ser al menos del **80%** en cada release. | Media |
+md
 
 ## Requerimientos de Sistema
 
 | ID | Descripción |
 |---|---|
-| RS-001 | |
+| RS-001 | Hardware mínimo: procesador de 2 núcleos, 4 GB de memoria RAM y 200 MB de espacio libre en disco para logs y métricas. |
+| RS-002 | Sistemas operativos compatibles: **Linux Kernel 5.4+**, **Windows 10/11** y **macOS 12+**. |
+| RS-003 | Versión mínima de compilador: **GCC 11+** en Linux, **MSVC 2019+** en Windows, y **Clang 13+** en macOS. |
+| RS-004 | Resolución mínima de pantalla: **1280x720** para visualización correcta del dashboard web. |
+| RS-005 | El sistema debe tener acceso a puertos estándar de red (ej. 5432 para PostgreSQL, 80/443 para HTTP/HTTPS). |
+| RS-006 | El instalador completo no debe exceder los **100 MB** de almacenamiento. |
