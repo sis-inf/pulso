@@ -38,4 +38,9 @@ md
 
 | ID | Descripción |
 |---|---|
-| RS-001 | |
+| RS-001 | Hardware mínimo: procesador de 2 núcleos, 4 GB de memoria RAM y 200 MB de espacio libre en disco para logs y métricas. |
+| RS-002 | Sistemas operativos compatibles: **Linux Kernel 5.4+**, **Windows 10/11** y **macOS 12+**. |
+| RS-003 | Versión mínima de compilador: **GCC 11+** en Linux, **MSVC 2019+** en Windows, y **Clang 13+** en macOS. |
+| RS-004 | Resolución mínima de pantalla: **1280x720** para visualización correcta del dashboard web. |
+| RS-005 | El sistema debe tener acceso a puertos estándar de red (ej. 5432 para PostgreSQL, 80/443 para HTTP/HTTPS). |
+| RS-006 | El instalador completo no debe exceder los **100 MB** de almacenamiento. |
