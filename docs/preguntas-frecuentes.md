@@ -51,7 +51,7 @@ cmake -B build
 cmake --build build
 ```  
 
-Para instrucciones detalladas por plataforma, consulte [docs/instalacion.md](instalacion.md).
+Para instrucciones detalladas por plataforma, consulte [instalacion.md](instalacion.md).
 
 ---
  
