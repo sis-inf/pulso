@@ -22,6 +22,19 @@ Pulso es compatible con los siguientes sistemas operativos:
  
 ## ¿Qué métricas puede monitorear Pulso?
 
+Pulso monitorea las siguientes métricas del sistema:
+ 
+| Métrica | Unidad | Frecuencia |
+|---|---|---|
+| CPU | Porcentaje (%) | Cada 1 segundo |
+| Memoria RAM | MB / % | Cada 1 segundo |
+| Disco | GB / % | Cada 5 segundos |
+| Red (entrada/salida) | Bytes/segundo | Cada 1 segundo |
+| Procesos activos | Cantidad | Cada 2 segundos |
+| Carga del sistema | Load average | Cada 5 segundos |
+ 
+Las frecuencias de muestreo pueden ajustarse según el entorno de ejecución.
+
 ---
  
 ## ¿Cómo se instala Pulso?
