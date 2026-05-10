@@ -87,3 +87,9 @@ Para más detalles, consulte [CONTRIBUTING.md](../CONTRIBUTING.md).
 ---
  
 ## ¿Qué compilador necesito para usar Pulso?
+
+Pulso requiere un compilador compatible con el estándar **C++17**. Las opciones soportadas según el sistema operativo son:
+ 
+- **Linux** — GCC 11 o superior
+- **macOS** — Clang 13 o superior (incluido con las herramientas de Xcode)
+- **Windows** — MSVC 2019 o superior (incluido con Visual Studio)
