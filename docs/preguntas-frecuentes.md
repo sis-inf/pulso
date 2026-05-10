@@ -12,6 +12,12 @@ Pulso es una herramienta de línea de comandos desarrollada en C++ que permite r
  
 ## ¿En qué plataformas funciona Pulso?
 
+Pulso es compatible con los siguientes sistemas operativos:
+ 
+- **Linux** — Kernel 5.4 o superior
+- **Windows** — Windows 10 u 11
+- **macOS** — macOS 12 o superior
+
 ---
  
 ## ¿Qué métricas puede monitorear Pulso?
