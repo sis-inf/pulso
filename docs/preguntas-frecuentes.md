@@ -6,6 +6,8 @@ Respuestas a las dudas más comunes sobre Pulso.
  
 ## ¿Qué es Pulso?
 
+Pulso es una herramienta de línea de comandos desarrollada en C++ que permite recolectar y visualizar métricas del sistema en tiempo real. Monitorea recursos como CPU, memoria RAM, disco y red, y está diseñada para ofrecer alto rendimiento con bajo consumo de recursos.
+
 ---
  
 ## ¿En qué plataformas funciona Pulso?
