@@ -1,7 +1,8 @@
 #include <csignal>
+#include <atomic>
 #include <iostream>
 
-bool isRunning = true;
+std::atomic<bool> isRunning = true;
 
 void handler(int signal) {
     isRunning = false;
