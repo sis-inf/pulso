@@ -9,11 +9,12 @@ Internamente, un collector sigue siempre la misma interfaz: un método que ejecu
 
 ## Collectors implementados
 
-| Nombre | Archivo           | Métricas que devuelve                  |
-|--------|-------------------|----------------------------------------|
-| CPU    | `cpu_collector`   | `cpu_user`, `cpu_system`, `cpu_idle`  |
-| RAM    | `ram_collector`   | `ram_total`, `ram_usada`, `ram_libre` |
-| Disco  | `disco_collector` | `disco_total`, `disco_usado`, `disco_libre` |
+| Nombre | Archivo                    | Métricas que devuelve                   |
+|--------|----------------------------|-----------------------------------------|
+| cpu    | `src\collectors\cpu`       | `cpu_usage`     |
+| disk   | `src\collectors\disk`      | `ram_total`, `ram_usada`, `ram_libre` |
+| memory | `src\collectors\memory`    | `disco_total`, `disco_usado`, `disco_libre` |
+| network| `src\collectors\network`   | `disco_total`, `disco_usado`, `disco_libre` |
 
 ## Cómo agregar un nuevo collector
 
