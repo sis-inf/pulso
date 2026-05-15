@@ -1,103 +1,84 @@
 # Arquitectura del Sistema
 
-## ¿Qué es arquitectura de software?
-
-La arquitectura de software es la estructura general de un sistema: define qué partes lo componen, qué responsabilidad tiene cada una y cómo se comunican entre sí. Una buena arquitectura hace que el sistema sea más fácil de entender, mantener y escalar.
-En Pulso, la arquitectura responde a una pregunta concreta: ¿cómo viaja la información desde el hardware del servidor hasta el usuario que la consulta?
-
-
-## Visión general
-
-Pulso es una herramienta de línea de comandos desarrollada en C++ que permite recolectar y visualizar métricas del sistema como CPU, RAM, disco y red de forma centralizada. Su diseño prioriza el alto rendimiento y el bajo consumo de recursos, operando directamente sobre las APIs del sistema operativo.
+## 1. Introducción
+La arquitectura de software de **Pulso** define la organización estructural del sistema, sus responsabilidades y las interconexiones entre sus componentes. Este diseño responde a la necesidad de monitorear recursos críticos de hardware (CPU, RAM, Red) con un enfoque en la eficiencia, escalabilidad y disponibilidad de datos en tiempo real.
 
 ---
 
-## Componentes principales
-
-* **Agente recolector:** Se ejecuta en el sistema y obtiene métricas como uso de CPU, RAM, disco y red consultando directamente las APIs del sistema operativo.
-* **Módulo de procesamiento:** Recibe los datos del agente, los organiza y los prepara para ser presentados al usuario.
-* **Interfaz CLI:** Permite al usuario interactuar con Pulso desde la terminal, ya sea mediante el menú interactivo o a través de argumentos como --status.
+## 2. Visión General del Sistema
+Pulso es una plataforma de monitoreo distribuida. A diferencia de herramientas CLI aisladas, Pulso integra un modelo de recolección de datos mediante agentes que se comunican con una infraestructura central para la persistencia, alerta y visualización mediante una interfaz web moderna.
 
 ---
 
-## Diagrama de arquitectura
+## 3. Componentes Principales
+El sistema se divide en módulos fundamentales, cada uno cumpliendo una función específica dentro del ciclo de vida del dato:
+
+* **Agente Recolector (C++):** Módulo de bajo nivel que interactúa directamente con las APIs del Kernel (ej. `/proc` en Linux, `WinAPI` en Windows). Extrae métricas precisas de:
+    * **CPU:** Carga por núcleo, frecuencia y tiempo de interrupción.
+    * **RAM:** Memoria total, disponible, swap y buffers.
+    * **Red:** Paquetes transmitidos/recibidos, errores de interfaz y ancho de banda.
+* **Almacenamiento de Métricas:** Estructura de persistencia encargada de mantener el historial de las métricas recolectadas para análisis temporal y comparativas.
+* **Módulo de Alertas:** Motor de reglas que evalúa las métricas en tiempo real. Dispara notificaciones cuando se superan umbrales críticos (ej. CPU > 90%).
+* **Panel Web (Frontend):** Interfaz gráfica de usuario que permite la visualización intuitiva mediante gráficas dinámicas y dashboards de estado.
+
+---
+
+## 4. Tecnologías Utilizadas
+Se han seleccionado herramientas que garantizan la interoperabilidad y el rendimiento exigido en los criterios de aceptación.
+
+| Componente | Tecnología | Versión | Justificación |
+| :--- | :--- | :--- | :--- |
+| **Núcleo / Agente** | C++ | C++17 | Control granular de memoria y acceso directo a recursos del sistema. |
+| **Compilador** | GCC / Clang | Reciente | Optimización de binarios y cumplimiento de estándares modernos. |
+| **Build System** | CMake | 3.10+ | Estándar de la industria para proyectos multiplataforma en C++. |
+| **Visualización** | Panel Web | HTML/JS | Facilita el acceso remoto a las métricas de forma visual y moderna. |
+| **Librerías Ext.** | Nlohmann/JSON | - | Manejo eficiente de transferencia de datos entre el agente y el panel. |
+
+---
+
+## 5. Diagrama de Arquitectura
+El siguiente diagrama describe la interacción entre los componentes definidos para el sistema Pulso.
+
 ```mermaid
 graph TD
-A[Agente recolector] --> B[Módulo de procesamiento]
-B --> C[Interfaz CLI:]
-B --> D[Usuario]
+    subgraph "Nivel de Sistema (Host)"
+        A[Agente Recolector] -->|Sonda de Hardware| B(CPU / RAM / Red)
+    end
+
+    subgraph "Servicios Centrales"
+        A -->|Envío de Datos JSON| C[Almacenamiento de Métricas]
+        C --> D[Módulo de Alertas]
+        D -->|Trigger| E{¿Umbral excedido?}
+        E -->|Sí| F[Notificación/Alerta]
+    end
+
+    subgraph "Capa de Presentación"
+        C -->|Fetch Data| G[Panel Web]
+        G -->|Visualización| H[Usuario Final]
+    end
+
+    style A fill:#f96,stroke:#333,stroke-width:2px
+    style G fill:#6cf,stroke:#333,stroke-width:2px
 ```
-## Comunicación entre componentes
+---
+## 6. Decisiones Técnicas (ADR)
+### 6.1 Elección de C++17 para el Agente
+* **Contexto:** Se requiere un monitoreo constante y preciso de los recursos de hardware sin impactar negativamente en el rendimiento del servidor o host donde se ejecuta la herramienta.
+* **Decisión:** Se optó por el uso de C++17 en lugar de lenguajes interpretados o de alto nivel como Python.
+* **Consecuencia:** El agente logra mantener una huella de memoria mínima y un uso de CPU insignificante, cumpliendo con los estándares de eficiencia técnica para herramientas de monitoreo profesional y sistemas de misión crítica.
 
-Cada componente tiene una responsabilidad definida y se comunica con el siguiente en una cadena lineal:
-
-* El Agente recolector consulta las APIs del sistema operativo (/proc en Linux, WinAPI en Windows, sysctl en macOS) para obtener las métricas actuales de CPU, RAM, disco y red.
-* El Módulo de procesamiento recibe esos datos, los organiza y determina qué información presentar según la acción solicitada.
-* La Interfaz CLI toma los datos procesados y los muestra al usuario en la terminal, ya sea en formato de menú interactivo o como respuesta directa a un argumento como --status.
+### 6.2 Implementación de Panel Web sobre CLI
+* **Contexto:** Las métricas generadas por el sistema deben ser consultadas de forma visual, intuitiva y centralizada por el equipo técnico o los administradores de sistemas.
+* **Decisión:** Desarrollo de un panel web dedicado para la visualización de datos, complementando las capacidades básicas de la terminal.
+* **Consecuencia:** Se mejora significativamente la accesibilidad remota y se permite la representación de tendencias temporales mediante gráficas de alta fidelidad, facilitando la toma de decisiones basada en datos históricos.
 
 ---
 
-## Tecnologías utilizadas
+## 7. Flujo de Datos
+El recorrido de una métrica, desde su recolección en el hardware hasta su visualización final en la interfaz de usuario, sigue este flujo lógico y secuencial:
 
-| Componente            | Tecnología   | Versión | Justificación |
-|----------------------|-------------|--------|--------------|
-| Lenguaje principal   | C++         | C++17  | Alto rendimiento y control directo sobre los recursos del sisitema |
-| Compilador           | GCC / Clang / MSVC| -      | Compatibilidad con Windows, Linux y macOS |
-| Build system         | CMake   | -      | Facilita la compilación multiplataforma del proyecto |
-| Interfaz de usuario  | CLI (ter minal) | -      | Acceso directo, ligero y sin dependencias externas |
-
----
-
-## Decisiones de diseño
-
-### Decisión 1
-
-**Contexto:**
-Se necesitaba un lenguaje eficiente para recolectar métricas del sistema en tiempo real.
-
-**Decisión:**
-Se eligió C++ en lugar de Python u otros lenguajes de alto nivel.
-
-**Consecuencias:**
-
-* Mayor rendimiento y menor uso de recursos del siistema.
-* Control directo sobre la memoria y los procesos del sistema operativo. 
-* Mayor complejidad en el desarrollo comparado con lenguajes interpretados.
-
-### Decisión 2
-
-**Contexto:**
-Se necesitaba que Pulso funcionara en múltiples sistemas operativos (Windows, Linux y macOS) sin reescribir el código para cada uno.
-
-**Decisión:**
-Se eligió CMake como sistema de construcción multiplataforma.
-
-**Consecuencias:**
-
-* Un único conjunto de instrucciones de compilación funciona en los tres sistemas operativos soportados.
-* Facilita la incorporación de nuevos colaboradores independientemente de su entorno de desarrollo.
-
-### Decisión 3
-
-**Contexto:**
-Se necesitaba definir cómo el usuario interactuaría con el sistema para consultar las métricas.
-
-**Decisión:**
-Se adoptó una interfaz de línea de comandos (CLI) con dos modos de uso: menú interactivo y argumentos directos (--status).
-
-**Consecuencias:**
-
-* La herramienta es ligera y no requiere dependencias externas para su visualización.
-* Es accesible desde cualquier terminal en los sistemas operativos soportados.
-* Resulta especialmente útil para desarrolladores y equipos técnicos que trabajan en entornos de servidor.
-
-
-
----
-
-## Flujo de datos
-
-1. El usuario ejecuta Pulso desde la terminal (./pulso o ./pulso --status).
-2. El agente recolector consulta las métricas del sistema al sistema operativo.
-3. El módulo de procesamiento organiza y prepara los datos obtenidos.
-4. La interfaz CLI presenta la información al usuario en la terminal.
+1. **Recolección:** El **Agente Recolector** obtiene el estado actual del hardware (CPU, RAM, Red) realizando consultas directas a las APIs del sistema operativo.
+2. **Estructuración:** Los datos brutos recolectados se transforman a formato **JSON** para asegurar la interoperabilidad y el intercambio de información entre el Agente (C++) y el Panel.
+3. **Persistencia:** El componente de **Almacenamiento** recibe la métrica estructurada y la guarda en la base de datos con su respectiva marca de tiempo (*timestamp*).
+4. **Análisis:** El **Módulo de Alertas** evalúa el dato en tiempo real; si el valor detectado supera los umbrales de seguridad predefinidos, dispara una notificación de advertencia.
+5. **Visualización:** El **Panel Web** consulta los datos almacenados y renderiza las métricas en un formato gráfico e interactivo para el usuario final.
