@@ -177,10 +177,17 @@ int main() {
   return 0;
 }
 ```
+
+## 📢 Decisión final del equipo sobre el idioma del código
+
+Tras revisar la inconsistencia entre la conclusión previa y los ejemplos técnicos del estándar de Google, el equipo ha determinado:
+- **Estandarización:** Todo el código fuente (variables, funciones, clases y archivos) debe escribirse obligatoriamente en **Inglés**.
+- **Justificación:** Se busca asegurar la compatibilidad con herramientas de análisis estático, facilitar la integración de librerías externas y prepararnos para entornos profesionales globales.
+
 ## 🔥 Conclusión rápida
 - snake_case → variables
 - PascalCase → funciones y tipos
 - 2 espacios → indentación
 - .cc / .h → archivos
 - Consistencia > preferencias personales
-- Código → Español
+- Código → Inglés

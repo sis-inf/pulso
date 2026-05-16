@@ -16,34 +16,35 @@ Este documento define los actores y las funcionalidades principales del agente d
   2. Consulta el estado del procesador mediante llamadas al sistema.
   3. Almacena temporalmente el valor capturado para su envío.
 
-### CU-02: Envío de Alertas por Consumo de RAM
+### CU-02: Consulta del Estado General del Sistema
 - **Actor:** Administrador de Sistemas
-- **Descripción:** Notifica al administrador cuando el uso de memoria excede un umbral crítico.
+- **Descripción:** Permite al administrador obtener un resumen completo del estado actual del sistema desde la terminal.
 - **Flujo Principal:**
-  1. El sistema detecta que la RAM superó el límite configurado.
-  2. Se genera un registro de alerta de alta prioridad.
-  3. El administrador recibe la notificación en el panel central.
+  1. El administrador ejecuta `./pulso --status` desde la terminal.
+  2. El Agente Pulso consulta las métricas actuales al sistema operativo.
+  3. Se muestra el estado general: procesos activos, uso de recursos y estado de la red.
 
 ### CU-03: Visualización de Estado de Red
 - **Actor:** Administrador de Sistemas
-- **Descripción:** Permite ver el tráfico de entrada y salida de las interfaces de red.
+- **Descripción:** Permite ver la velocidad de descarga, subida y el estado de la conexión de red del sistema.
 - **Flujo Principal:**
-  1. El Administrador selecciona el servidor a monitorear.
-  2. El sistema recupera los datos de tráfico de la base de datos.
-  3. Se despliega una gráfica con el ancho de banda utilizado.
+  1. El administrador solicita ver el estado del sistema vía menú o `--status`.
+  2. El Agente Pulso consulta las métricas de red al sistema operativo.
+  3. Se muestra la velocidad de descarga, subida en Mbps y el estado de conexión.
 
-### CU-04: Configuración de Intervalos de Captura
+### CU-04: Navegación por el Menú Interactivo
 - **Actor:** Administrador de Sistemas
-- **Descripción:** Define la frecuencia con la que el agente recolecta información.
+- **Descripción:** Permite al administrador interactuar con Pulso a través de un menú de opciones en la terminal.
 - **Flujo Principal:**
-  1. El Administrador accede a la configuración del agente.
-  2. Modifica el tiempo de escaneo (polling interval).
-  3. El agente reinicia su ciclo con el nuevo parámetro.
+  1. El administrador ejecuta `./pulso` sin argumentos.
+  2. Pulso presenta el menú con las opciones: Ver estado, Actualizar datos, Salir.
+  3. El administrador selecciona una opción ingresando el número correspondiente.
+  4. Pulso ejecuta la acción y muestra el resultado.
 
-### CU-05: Reporte de Disponibilidad (Uptime)
+### CU-05: Recolección de Métricas de Memoria RAM
 - **Actor:** Agente Pulso
-- **Descripción:** Reporta el tiempo que el servidor ha estado operativo sin interrupciones.
+- **Descripción:** El agente captura el estado actual de la memoria RAM del sistema, incluyendo uso total y disponible.
 - **Flujo Principal:**
-  1. El agente calcula el tiempo desde el arranque del sistema.
-  2. Envía el reporte de "Uptime" al servidor central.
-  3. El sistema actualiza el indicador de disponibilidad.
+  1. El agente consulta la memoria RAM al sistema operativo.
+  2. Obtiene la memoria total, en uso y disponible.
+  3. Almacena temporalmente los valores para mostrarlos al administrador.
