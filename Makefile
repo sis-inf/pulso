@@ -1,60 +1,91 @@
-# ==============================================================================
-# Makefile simple — Issue #34
-# Compilación sin CMake para entornos ligeros
-# ==============================================================================
+# Compilador y flags
+CXX ?= g++
+CXXFLAGS ?= -std=c++20 -Wall -Wextra -Wpedantic -O2 -I/usr/include
+LDFLAGS ?= -lSQLiteCpp -lsqlite3 -lpthread -ldl
 
-CXX     ?= g++
-CXXFLAGS = -std=c++17 -Wall
-
-SRC_DIR  = src
-TEST_DIR = tests
+# Directorios
+SRC_DIR = src
 BUILD_DIR = build
+BIN_DIR = .
+TESTS_DIR = tests
 
-# Recopilar fuentes automáticamente
-SRCS     = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS     = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
+# Archivos fuente
+SOURCES = $(wildcard $(SRC_DIR)/*.cpp) \
+          $(wildcard $(SRC_DIR)/collectors/*.cpp) \
+          $(wildcard $(SRC_DIR)/collectors/cpu/*.cpp) \
+          $(wildcard $(SRC_DIR)/collectors/disk/*.cpp) \
+          $(wildcard $(SRC_DIR)/collectors/memory/*.cpp) \
+          $(wildcard $(SRC_DIR)/collectors/network/*.cpp) \
+          $(wildcard $(SRC_DIR)/config/*.cpp) \
+          $(wildcard $(SRC_DIR)/formatters/*.cpp) \
+          $(wildcard $(SRC_DIR)/storage/*.cpp) \
+          $(wildcard $(SRC_DIR)/utils/*.cpp)
 
-TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp)
-TEST_OBJS = $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_DIR)/test_%.o, $(TEST_SRCS))
+# Archivos objeto
+OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SOURCES))
 
-TARGET      = $(BUILD_DIR)/app
-TEST_TARGET = $(BUILD_DIR)/run_tests
+# Nombre del ejecutable
+TARGET = $(BIN_DIR)/pulso
 
-# ------------------------------------------------------------------------------
-# Target por defecto
-# ------------------------------------------------------------------------------
-.PHONY: all
+# Archivos de prueba
+TEST_SOURCES = $(wildcard $(TESTS_DIR)/*.cpp)
+TEST_TARGET = $(BIN_DIR)/run_tests
+
+# Regla principal
 all: $(TARGET)
 
-$(TARGET): $(OBJS) | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+# Crear directorio de build si no existe
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/collectors
+	mkdir -p $(BUILD_DIR)/collectors/cpu
+	mkdir -p $(BUILD_DIR)/collectors/disk
+	mkdir -p $(BUILD_DIR)/collectors/memory
+	mkdir -p $(BUILD_DIR)/collectors/network
+	mkdir -p $(BUILD_DIR)/config
+	mkdir -p $(BUILD_DIR)/formatters
+	mkdir -p $(BUILD_DIR)/storage
+	mkdir -p $(BUILD_DIR)/utils
 
-# Compilar cada .cpp → .o solo si hubo cambios (regla implícita con prereqs)
+# Compilar objetos
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# ------------------------------------------------------------------------------
-# Tests
-# ------------------------------------------------------------------------------
-.PHONY: test
+# Linkear ejecutable principal
+$(TARGET): $(OBJECTS)
+	$(CXX) $(OBJECTS) $(LDFLAGS) -o $(TARGET)
+
+# Compilar pruebas
+$(TEST_TARGET): $(TEST_SOURCES) $(filter-out $(BUILD_DIR)/main.o, $(OBJECTS))
+	$(CXX) $(CXXFLAGS) $(TEST_SOURCES) $(filter-out $(BUILD_DIR)/main.o, $(OBJECTS)) -o $(TEST_TARGET)
+
+# Ejecutar pruebas
 test: $(TEST_TARGET)
 	./$(TEST_TARGET)
 
-$(TEST_TARGET): $(TEST_OBJS) $(filter-out $(BUILD_DIR)/main.o, $(OBJS)) | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $^
-
-$(BUILD_DIR)/test_%.o: $(TEST_DIR)/%.cpp | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# ------------------------------------------------------------------------------
-# Directorio de build
-# ------------------------------------------------------------------------------
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
-# ------------------------------------------------------------------------------
-# Limpieza
-# ------------------------------------------------------------------------------
-.PHONY: clean
+# Limpiar archivos generados
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -f $(TARGET)
+	rm -f $(TEST_TARGET)
+
+# Limpieza más agresiva
+distclean: clean
+	rm -rf $(BIN_DIR)/pulso
+	rm -rf $(BIN_DIR)/run_tests
+
+# Verificar compilación sin warnings
+check:
+	$(CXX) $(CXXFLAGS) -fsyntax-only $(SOURCES)
+
+# Ayuda
+help:
+	@echo "Comandos disponibles:"
+	@echo "  make         - Compilar pulso"
+	@echo "  make test    - Compilar y ejecutar pruebas"
+	@echo "  make clean   - Limpiar archivos objeto"
+	@echo "  make check   - Verificar sintaxis sin warnings"
+	@echo "  make help    - Mostrar esta ayuda"
+
+# Declarar phony targets
+.PHONY: all test clean distclean check help
