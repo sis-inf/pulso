@@ -3,6 +3,10 @@
 #include <map>
 #include <string>
 #include <thread>
+#include <iostream>
+
+#include "config/config.hpp"
+#include "cli/arg_parser.h"
 
 // --- Declaraciones de funciones existentes en otros archivos ---
 
@@ -58,8 +62,35 @@ void start(int intervalo_ms) {
     }
 }
 
-int main() {
+
+
+/**
+ * @brief Punto de entrada principal.
+ */
+int main(int argc, char* argv[])
+{
+    /**
+     * Configuración con valores por defecto.
+     */
+    MonitorConfig config;
+
+    /**
+     * Procesar argumentos CLI.
+     */
+    if (!parse_arguments(argc, argv, config))
+    {
+        return 1;
+    }
+
+    /**
+     * Configurar manejo de señales.
+     */
     setupSignalHandler();
-    start(1000);  // lectura cada 1000 ms
+
+    /**
+     * Iniciar monitoreo.
+     */
+    start(config.interval_ms);
+
     return 0;
 }
