@@ -14,6 +14,15 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 include(cmake/Dependencies.cmake)
 add_subdirectory(src)
 
+# Los siguientes subdirectorios están vacíos o pendientes de implementación.
+# Se comentan para evitar advertencias de CMake sobre directorios sin archivos fuente.
+# Descomentar cuando se agreguen archivos fuente en cada directorio.
+
+# add_subdirectory(src/collectors/disk)
+# add_subdirectory(src/collectors/network)
+# add_subdirectory(src/alertas)
+# add_subdirectory(src/config)
+
 if(PULSO_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
