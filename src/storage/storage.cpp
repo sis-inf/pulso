@@ -1,5 +1,7 @@
 #include "storage.hpp"
 #include "schema.hpp"
+#include <ctime>
+#include <map>
  
 namespace pulso::storage {
  
@@ -125,6 +127,59 @@ std::size_t Storage::total() const {
     query.executeStep();
     return static_cast<std::size_t>(query.getColumn(0).getInt64());
 }
- 
+pulso::core::Snapshot Storage::getPromedio(uint32_t ventana_segundos) const {
+    // Calcular el timestamp de inicio de la ventana
+    std::int64_t ahora = static_cast<std::int64_t>(std::time(nullptr));
+    std::int64_t desde = ahora - static_cast<std::int64_t>(ventana_segundos);
+
+    // Obtener snapshots dentro de la ventana
+    auto snapshots = history(desde, ahora);
+
+    // Si no hay snapshots en la ventana, retornar snapshot vacío
+    if (snapshots.empty()) {
+        pulso::core::Snapshot vacio;
+        vacio.timestamp = ahora;
+        for (const auto& nombre : {
+            "cpu.usage", "cpu.cores",
+            "memory.total", "memory.used", "memory.available",
+            "disk.total", "disk.used", "disk.free",
+            "network.rx_bytes", "network.tx_bytes"}) {
+            pulso::core::Metrica m;
+            m.name      = nombre;
+            m.value     = 0.0;
+            m.unit      = "";
+            m.timestamp = ahora;
+            vacio.metrics.push_back(m);
+        }
+        return vacio;
+    }
+
+    // Acumular valores por nombre de métrica
+    std::map<std::string, double> acumulado;
+    std::map<std::string, std::string> unidades;
+
+    for (const auto& snap : snapshots) {
+        for (const auto& m : snap.metrics) {
+            acumulado[m.name] += m.value;
+            unidades[m.name]   = m.unit;
+        }
+    }
+
+    // Calcular promedio
+    pulso::core::Snapshot promedio;
+    promedio.timestamp = ahora;
+
+    for (auto& [nombre, total] : acumulado) {
+        pulso::core::Metrica m;
+        m.name      = nombre;
+        m.value     = total / static_cast<double>(snapshots.size());
+        m.unit      = unidades[nombre];
+        m.timestamp = ahora;
+        promedio.metrics.push_back(m);
+    }
+
+    return promedio;
+}
+
 } // namespace pulso::storage
  
