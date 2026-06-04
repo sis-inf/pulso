@@ -22,6 +22,7 @@ namespace pulso::http {
  * @param storage   Referencia al almacenamiento para obtener el último snapshot.
  * @param formatter Referencia al formatter que serializa el snapshot.
  */
+
 void registrarMetrics(
     httplib::Server&                       servidor,
     const pulso::storage::Storage&         storage,

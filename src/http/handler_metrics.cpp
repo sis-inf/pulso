@@ -5,6 +5,7 @@
 
 namespace pulso::http {
 
+
 void registrarMetrics(
     httplib::Server&                       servidor,
     const pulso::storage::Storage&         storage,
