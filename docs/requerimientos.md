@@ -34,6 +34,13 @@ Los siguientes requerimientos definen las restricciones técnicas y de calidad b
 | **RNF-011** | Mantenibilidad | La cobertura de pruebas unitarias debe ser al menos del **80%** en cada release. | Media |
 md
 
+
+| RNF-012 | Rendimiento | Consumo máximo de CPU: < 2% de un solo núcleo en operación normal | Alta |
+| RNF-013 | Rendimiento | Consumo máximo de memoria RAM: < 50 MB en estado estable | Alta |
+| RNF-014 | Rendimiento | Latencia máxima del endpoint /metrics: < 50 ms | Alta |
+| RNF-015 | Rendimiento | Tiempo máximo de inicio del agente: < 2 segundos | Alta |
+| RNF-016 | Disponibilidad | Disponibilidad anual del servicio: 99.9% de tiempo activo | Alta |
+
 ## Requerimientos de Sistema
 
 | ID | Descripción |
