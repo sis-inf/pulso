@@ -93,3 +93,34 @@ Pulso requiere un compilador compatible con el estándar **C++17**. Las opciones
 - **Linux** — GCC 11 o superior
 - **macOS** — Clang 13 o superior (incluido con las herramientas de Xcode)
 - **Windows** — MSVC 2019 o superior (incluido con Visual Studio)
+
+---
+
+
+---
+
+## Preguntas frecuentes sobre C++ y CMake
+
+### ¿Qué es CMake y por qué se usa en el proyecto?
+CMake es una herramienta que ayuda a preparar la compilación del programa. Funciona en cualquier sistema operativo (Windows, Linux, Mac), por lo que no hace falta cambiar la configuración para trabajar en diferentes computadoras.
+
+### ¿Cómo agrego un nuevo archivo `.cpp` al proyecto?
+Debes modificar el archivo llamado `CMakeLists.txt` que está en la carpeta principal del repositorio. Ahí hay una lista con todos los archivos que forman parte del programa; solo tienes que escribir el nombre del nuevo archivo al lado de los demás que ya están listados.
+
+### ¿Qué es la carpeta `build` que aparece en el repositorio?
+Es una carpeta donde se guardan archivos temporales que se generan al preparar el programa. Puedes borrarla sin ningún problema: si se borra, se vuelve a crear automáticamente cuando se configura el proyecto de nuevo.
+
+### ¿Qué es `clang-format` y para qué sirve?
+Es una herramienta que se usa para que todo el código tenga el mismo orden, espacios y estilo. Así todos los que trabajan en el proyecto pueden leer y entender el código de la misma forma.
+
+### ¿Cómo se puede probar solo una parte del programa?
+Existen formas de seleccionar solo lo que se quiere revisar sin tener que probar todo el proyecto completo. Esto sirve para verificar que una función específica funcione bien sin afectar el resto.
+
+### ¿Qué es una fuga de memoria y por qué hay que evitarla?
+Ocurre cuando el programa usa espacio en la memoria de la computadora y no lo libera después de terminar de usarlo. Con el tiempo esto puede hacer que el sistema se vuelva lento o deje de responder.
+
+### ¿Qué hacer si hay errores al intentar compilar?
+Lo más recomendable es empezar desde cero: se borra la carpeta `build` y se vuelve a configurar todo el proyecto desde el principio. Esto suele solucionar problemas causados por archivos antiguos.
+
+### ¿Cómo se pueden recibir avisos de posibles errores al escribir el código?
+Se pueden agregar reglas sencillas en el archivo de configuración para que el sistema avise si hay algo que podría causar problemas, antes de terminar de armar el programa.
