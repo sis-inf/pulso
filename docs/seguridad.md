@@ -65,8 +65,8 @@ A continuación se describen las principales consideraciones de seguridad:
 
 - **Mitigación:**
 
- - * Configurar el servidor para escuchar únicamente en `localhost` cuando no sea necesario el acceso remoto.
- - * Restringir el acceso mediante reglas de firewall.
+  * Configurar el servidor para escuchar únicamente en `localhost` cuando no sea necesario el acceso remoto.
+  * Restringir el acceso mediante reglas de firewall.
   * Evitar exponer métricas sensibles en redes no confiables.
 
 - **Riesgo:** Un gran volumen de solicitudes HTTP puede provocar degradación del servicio o ataques de denegación de servicio (DoS).
