@@ -58,6 +58,31 @@ A continuación se describen las principales consideraciones de seguridad:
   - Implementar capas de abstracción para cada sistema operativo.
   - Validar el comportamiento en ambos entornos.
   - Evitar dependencias inseguras o específicas sin validación.
+    
+## 7. Seguridad del servidor HTTP
+
+- **Riesgo:** La exposición de métricas mediante endpoints HTTP puede permitir acceso no autorizado a información del sistema.
+
+- **Mitigación:**
+
+ - * Configurar el servidor para escuchar únicamente en `localhost` cuando no sea necesario el acceso remoto.
+ - * Restringir el acceso mediante reglas de firewall.
+  * Evitar exponer métricas sensibles en redes no confiables.
+
+- **Riesgo:** Un gran volumen de solicitudes HTTP puede provocar degradación del servicio o ataques de denegación de servicio (DoS).
+
+- **Mitigación:**
+
+  * Implementar mecanismos de rate limiting en futuras versiones.
+  * Monitorear el uso de recursos del servidor HTTP.
+  * Restringir el acceso a clientes autorizados cuando sea posible.
+- **Advertencia:** Actualmente el servidor HTTP no cuenta con mecanismos de autenticación.
+
+- **Mitigación recomendada:**
+
+  * Utilizar firewall para limitar el acceso al servicio.
+  * Permitir conexiones únicamente desde direcciones IP confiables.
+  * Ejecutar el servicio en redes privadas cuando sea posible.
 
 ## Notas finales
 
