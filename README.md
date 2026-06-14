@@ -1,238 +1,98 @@
 # Pulso
 
-Plataforma en C++ para gestionar y monitorear información clave de forma eficiente.
-
-## Inicio Rápido
-
-```bash
-sudo apt install git cmake g++
-git clone https://github.com/sis-inf/pulso.git && cd pulso
-cmake -S . -B build && cmake --build build
-./build/pulso --once
-```
-
-Salida esperada:
-
-```text
-Estado del sistema: OK
-```
-
+Agente de monitoreo de sistemas en C++ para recolección de métricas y exposición vía HTTP.
 
 ## ¿Qué es?
 
-Pulso es una aplicación desarrollada en C++ que permite gestionar y visualizar información relevante de manera centralizada. Está pensada para ofrecer alto rendimiento y control directo sobre los recursos del sistema.
+Pulso es un agente ligero escrito en C++ que recolecta métricas del sistema (CPU, RAM, disco, red, procesos, carga) y las expone a través de endpoints HTTP. Ofrece almacenamiento histórico en SQLite y formatos de salida compatibles con Prometheus.
 
 ## ¿Para quién es?
 
-Pulso está dirigido a:
-
-- Desarrolladores que trabajan con sistemas de alto rendimiento
-- Equipos que requieren herramientas eficientes y ligeras
-- Proyectos que necesitan control preciso sobre memoria y procesamiento
+- Administradores de servidores que necesitan monitoreo en tiempo real
+- Equipos de operaciones que requieren métricas históricas
+- Integradores con Prometheus para alertas y dashboards
 
 ## ¿Qué problema resuelve?
 
-Pulso ayuda a resolver:
+Pulso ofrece una alternativa ligera a soluciones de monitoreo pesadas. Al estar implementado en C++, consume menos recursos que agentes basados en Python o Java, ideal para servidores con recursos limitados o entornos donde cada MB de RAM cuenta.
 
-- La dispersión de información en múltiples fuentes
-- La falta de herramientas rápidas y eficientes
-- El alto consumo de recursos en soluciones tradicionales
+## Requisitos
 
-Gracias a su implementación en C++, Pulso permite una ejecución más rápida y optimizada.
-
-## Instalación
-
-**Requisitos del sistema**
-- Sistema operativo: Windows, Linux o macOS
-- Compilador de C++ (GCC, Clang o MSVC)
-- CMake (recomendado)
+- Sistema operativo: Linux
+- Compilador C++17 (g++ o clang++)
+- CMake 3.16 o superior
 - Git
+- Dependencias del sistema: libsqlite3-dev, libcurl4-openssl-dev
 
-### Pasos básicos
+## Compilación
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/pulso.git
-
-# Entrar al proyecto
+git clone https://github.com/sis-inf/pulso.git
 cd pulso
+cmake -S . -B build
+cmake --build build
 ```
 
----
+## Uso rápido
 
-> [!NOTE]
-> Estos pasos corresponden a la versión final esperada del proyecto.
+Arrancar el agente con la configuración por defecto:
 
 ```bash
-# Crear carpeta de build
-mkdir build && cd build
-
-# Generar archivos de compilación
-cmake ..
-
-# Compilar
-cmake --build .
+./build/bin/pulso --config pulso.toml
 ```
 
-Uso rápido:
+Realizar una primera consulta:
 
 ```bash
-# Ejecutar el programa (puede variar según el sistema)
-./pulso
+curl http://localhost:8080/health
+curl http://localhost:8080/metrics
 ```
 
-En Windows:
+## Endpoints disponibles
+
+| Endpoint | Método | Parámetros | Descripción | Ejemplo de respuesta |
+|----------|--------|------------|-------------|---------------------|
+| `/health` | GET | Ninguno | Estado del agente y uptime | `{"status":"ok","uptime_seconds":123,"version":"0.1.0","hostname":"server01"}` |
+| `/metrics` | GET | Ninguno | Métricas actuales en JSON | `{"cpu_usage":23.5,"memory_used":3.2,...}` |
+| `/metrics/history` | GET | `desde`, `hasta`, `limite` | Histórico de métricas | `[{"timestamp":"2024-01-01T00:00:00Z","cpu_usage":20.0,...},...]` |
+| `/metrics/prometheus` | GET | Ninguno | Métricas en formato Prometheus | `pulso_cpu_usage 23.5\npulso_memory_used 3.2\n...` |
+
+## Configuración
+
+El archivo `pulso.toml` controla el comportamiento del agente. Secciones principales:
+
+- `[servidor]`: host y puerto del servidor HTTP (default: 0.0.0.0:8080)
+- `[sampler]`: intervalo de muestreo en segundos (default: 10)
+- `[storage]`: ruta de la base de datos SQLite y nivel de log
+
+## Integración con Prometheus
+
+Ejemplo de configuración para Prometheus (ver `examples/prometheus.yml`):
+
+```yaml
+scrape_configs:
+  - job_name: pulso
+    metrics_path: /metrics/prometheus
+    static_configs:
+      - targets:
+          - localhost:8080
+```
+
+## Ejecución de pruebas
 
 ```bash
-pulso.exe
+cmake --build build && ctest --test-dir build
 ```
 
----
-## Ejemplo basico de uso esperado
+## Documentación adicional
 
-```bash
-# Entrada
-./pulso
-
-# Salida
-¡Bienvenido a Pulso!
-Seleccione una opción:
-1. Ver estado
-2. Actualizar datos
-3. Salir
-
-# Entrada
-> 1
-
-# Salida
-Estado del sistema: OK
-```
-
-**Usando argumentos:**
-
-```bash
-# Entrada
-./pulso --status
-
-# Salida:
-Estado del sistema: OK
-Procesos activos: 5
-Uso de recursos: Normal
-CPU:
-- Uso: 23%
-- Núcleos activos: 4
-
-Memoria (RAM):
-- Uso: 3.2 GB / 8 GB
-- Disponible: 4.8 GB
-
-Disco:
-- Uso: 120 GB / 256 GB
-- Espacio libre: 136 GB
-
-Red:
-- Descarga: 12 Mbps
-- Subida: 3 Mbps
-- Estado: Conectado
-```
-
----
-> [!IMPORTANT]
-> Este proyecto se encuentra en desarrollo activo. Los pasos de instalación y ejecución pueden cambiar en futuras versiones.
----
-## Compilación con Makefile (sin CMake)
- 
-Para entornos ligeros donde CMake no está disponible, el proyecto incluye un
-`Makefile` alternativo listo para usar.
- 
-### Requisitos
- 
-| Herramienta | Versión mínima |
-|-------------|---------------|
-| `g++` / `clang++` | C++17 |
-| GNU Make | 4.x |
- 
-### Uso rápido
- 
-```bash
-# Compilar el proyecto
-make
- 
-# Usar un compilador distinto (ej. clang++)
-make CXX=clang++
- 
-# Ejecutar los tests
-make test
- 
-# Eliminar artefactos de compilación
-make clean
-```
- 
-### Variables configurables
- 
-| Variable | Valor por defecto | Descripción |
-|----------|------------------|-------------|
-| `CXX` | `g++` | Compilador C++ |
-| `CXXFLAGS` | `-std=c++17 -Wall` | Flags de compilación |
- 
-> **Nota:** el operador `?=` en `CXX` permite sobreescribir el compilador
-> desde la línea de comandos o desde la variable de entorno del sistema sin
-> modificar el Makefile.
- 
-### Estructura esperada
- 
-```
-project/
-├── src/          # Fuentes principales (*.cpp)
-├── tests/        # Fuentes de pruebas  (*.cpp)
-├── build/        # Artefactos generados (ignorado por git)
-└── Makefile
-```
- 
----
-
-## ✨ Características
-
-### 📊 Métricas monitoreadas
-- CPU
-- RAM
-- Disco
-- Red
-- Procesos activos
-- Carga del sistema
-- Uptime
-
-### 📤 Formatos de salida
-- JSON
-- Prometheus
-- CSV
-- Texto
-
-### 🌐 Endpoints HTTP
-- Consulta en tiempo real
-- Exportación de datos
-
-### ⚠️ Sistema de alertas
-- Configuración por umbrales
-- Notificación de valores fuera de rango
-
-### ⚙️ Modo de uso
-- Modo `--once`: ejecución única para scripting
-
-### Recompilación incremental
- 
-El Makefile compila únicamente los archivos `.cpp` que hayan cambiado desde
-la última build, gracias al seguimiento de dependencias de Make sobre los
-archivos objeto (`.o`) en `build/`.
----
-
-
-## Documentación
-Ver la carpeta [docs/](docs/)
+Ver la carpeta `docs/` para documentación detallada.
 
 ## Contribuir
-Ver [CONTRIBUTING.md](CONTRIBUTING.md)
+
+Ver `CONTRIBUTING.md` para guías de desarrollo.
 
 ## Licencia
-MIT — ver [LICENSE](LICENSE)
+
+Ver `LICENSE` para detalles de la licencia.
 
