@@ -27,3 +27,38 @@ Este comando crea la carpeta `build` y genera los archivos necesarios para la co
 En Linux, algunos programas pueden acceder a información del sistema mediante `/proc`.
 
 Si aparecen errores relacionados con permisos en `/proc`, se debe verificar que el programa tenga los permisos necesarios. No se recomienda modificar permisos del sistema sin conocer su impacto, ya que `/proc` contiene información sensible del sistema operativo y de los procesos en ejecución.
+
+
+---
+
+### Versiones de Ubuntu soportadas
+
+#### Ubuntu 22.04 LTS
+```bash
+sudo apt update
+sudo apt install build-essential cmake git
+# GCC 11 por defecto
+```
+## Ubuntu 24.04 LTS
+```bash
+sudo apt update
+sudo apt install build-essential cmake git
+# GCC 13 por defecto
+```
+## Compilación alternativa con Clang
+Primero instala el compilador:
+```bash
+sudo apt install clang
+```
+## Con CMake
+```bash
+# Configurar usando Clang
+CC=clang CXX=clang++ cmake -B build
+
+# Compilar con banderas de advertencia
+cmake --build build -- -Wall -Wextra -Wpedantic
+```
+## Directamente con Clang++
+```bash
+clang++ -std=c++17 -Wall -Wextra -Wpedantic main.cpp -o pulso
+```
