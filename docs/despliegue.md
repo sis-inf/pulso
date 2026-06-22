@@ -191,7 +191,7 @@ Pulso se configura principalmente mediante el archivo `pulso.toml`. Las siguient
 | `PULSO_LOG_LEVEL` | Sobrescribe el nivel de log definido en `[storage].nivel_log` del TOML | `debug` |
 | `PULSO_HTTP_PORT` | Sobrescribe el puerto HTTP definido en `[servidor].puerto` del TOML | `8080` |
 
-> 👉 Si una variable de entorno y el archivo TOML definen el mismo valor, revisa la documentación
+> 👉 Si una variable de entorno y el archivo TOML definen el mismo valor, revisa la documentación de ello
 > de `config.cpp` en el código fuente para confirmar el orden de precedencia antes de depender de ambos mecanismos a la vez.
 
 ## Solución de problemas comunes
