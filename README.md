@@ -1,191 +1,119 @@
 # Pulso
 
-Plataforma en C++ para gestionar y monitorear información clave de forma eficiente.
+## Descripción
+
+Pulso es un agente ligero de monitoreo en C++17 que expone métricas del sistema a través de una API HTTP local. Permite consultar el estado del sistema y sus métricas en tiempo real de forma simple y eficiente.
+
+---
 
 ## ¿Qué es?
 
-Pulso es una aplicación desarrollada en C++ que permite gestionar y visualizar información relevante de manera centralizada. Está pensada para ofrecer alto rendimiento y control directo sobre los recursos del sistema.
+Pulso es un agente de monitoreo que recopila métricas del sistema y las expone mediante endpoints HTTP.
+
+### Métricas disponibles:
+- Estado del sistema
+- Uso de CPU
+- Memoria
+- Historial de métricas
+
+### Endpoints disponibles:
+- `/health`
+- `/metrics`
+- `/metrics/history`
+- `/metrics/prometheus`
+
+---
 
 ## ¿Para quién es?
 
-Pulso está dirigido a:
+Pulso está diseñado para:
 
-- Desarrolladores que trabajan con sistemas de alto rendimiento
-- Equipos que requieren herramientas eficientes y ligeras
-- Proyectos que necesitan control preciso sobre memoria y procesamiento
+- Administradores de servidores Linux
+- Equipos de operaciones (DevOps)
+- Integradores de Prometheus
+- Sistemas que requieren monitoreo ligero
+
+---
 
 ## ¿Qué problema resuelve?
 
-Pulso ayuda a resolver:
+Pulso evita la complejidad de soluciones de monitoreo pesadas al ofrecer:
 
-- La dispersión de información en múltiples fuentes
-- La falta de herramientas rápidas y eficientes
-- El alto consumo de recursos en soluciones tradicionales
+- Un agente liviano en C++
+- Exposición directa de métricas vía HTTP
+- Fácil integración con Prometheus
+- Bajo consumo de recursos
 
-Gracias a su implementación en C++, Pulso permite una ejecución más rápida y optimizada.
+Es ideal para entornos donde se necesita observabilidad sin infraestructura compleja.
 
-## Instalación
+---
 
-**Requisitos del sistema**
-- Sistema operativo: Windows, Linux o macOS
-- Compilador de C++ (GCC, Clang o MSVC)
-- CMake (recomendado)
-- Git
+## Requisitos
 
-### Pasos básicos
+- Sistema operativo Linux
+- Compilador compatible con C++17 (g++ o clang++)
+- CMake >= 3.16
+- Dependencias del sistema necesarias para compilación
+
+---
+
+## Compilación
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/pulso.git
-
-# Entrar al proyecto
+git clone <URL_DEL_REPOSITORIO>
 cd pulso
-```
+cmake -S . -B build
+cmake --build build
+Uso rápido
+./build/bin/pulso --config pulso.toml
 
----
+En otra terminal:
 
-> [!NOTE]
-> Estos pasos corresponden a la versión final esperada del proyecto.
+curl http://localhost:8080/health
+curl http://localhost:8080/metrics
+Endpoints disponibles
+Endpoint	Descripción	Ejemplo
+/health	Estado del agente	{ "status": "ok" }
+/metrics	Métricas actuales del sistema	JSON con métricas del sistema
+/metrics/history	Historial de métricas	Lista temporal de datos
+/metrics/prometheus	Formato compatible con Prometheus	Texto en formato Prometheus
+Configuración
 
-```bash
-# Crear carpeta de build
-mkdir build && cd build
+Pulso utiliza el archivo:
 
-# Generar archivos de compilación
-cmake ..
+pulso.toml
 
-# Compilar
-cmake --build .
-```
+Este archivo permite configurar:
 
-Uso rápido:
+Puerto del servidor
+Intervalo de recolección de métricas
+Parámetros del sistema de monitoreo
+Integración con Prometheus
 
-```bash
-# Ejecutar el programa (puede variar según el sistema)
-./pulso
-```
+Ejemplo básico en:
 
-En Windows:
+examples/prometheus.yml
 
-```bash
-pulso.exe
-```
+Ejemplo:
 
----
-## Ejemplo basico de uso esperado
+scrape_configs:
+  - job_name: "pulso"
+    static_configs:
+      - targets: ["localhost:8080"]
+Ejecución de pruebas
+cmake --build build && ctest --test-dir build
+Documentación adicional
 
-```bash
-# Entrada
-./pulso
+Ver carpeta:
 
-# Salida
-¡Bienvenido a Pulso!
-Seleccione una opción:
-1. Ver estado
-2. Actualizar datos
-3. Salir
+docs/
+Contribuir
 
-# Entrada
-> 1
+Ver:
 
-# Salida
-Estado del sistema: OK
-```
+CONTRIBUTING.md
+Licencia
 
-**Usando argumentos:**
+Ver:
 
-```bash
-# Entrada
-./pulso --status
-
-# Salida:
-Estado del sistema: OK
-Procesos activos: 5
-Uso de recursos: Normal
-CPU:
-- Uso: 23%
-- Núcleos activos: 4
-
-Memoria (RAM):
-- Uso: 3.2 GB / 8 GB
-- Disponible: 4.8 GB
-
-Disco:
-- Uso: 120 GB / 256 GB
-- Espacio libre: 136 GB
-
-Red:
-- Descarga: 12 Mbps
-- Subida: 3 Mbps
-- Estado: Conectado
-```
-
----
-> [!IMPORTANT]
-> Este proyecto se encuentra en desarrollo activo. Los pasos de instalación y ejecución pueden cambiar en futuras versiones.
----
-## Compilación con Makefile (sin CMake)
- 
-Para entornos ligeros donde CMake no está disponible, el proyecto incluye un
-`Makefile` alternativo listo para usar.
- 
-### Requisitos
- 
-| Herramienta | Versión mínima |
-|-------------|---------------|
-| `g++` / `clang++` | C++17 |
-| GNU Make | 4.x |
- 
-### Uso rápido
- 
-```bash
-# Compilar el proyecto
-make
- 
-# Usar un compilador distinto (ej. clang++)
-make CXX=clang++
- 
-# Ejecutar los tests
-make test
- 
-# Eliminar artefactos de compilación
-make clean
-```
- 
-### Variables configurables
- 
-| Variable | Valor por defecto | Descripción |
-|----------|------------------|-------------|
-| `CXX` | `g++` | Compilador C++ |
-| `CXXFLAGS` | `-std=c++17 -Wall` | Flags de compilación |
- 
-> **Nota:** el operador `?=` en `CXX` permite sobreescribir el compilador
-> desde la línea de comandos o desde la variable de entorno del sistema sin
-> modificar el Makefile.
- 
-### Estructura esperada
- 
-```
-project/
-├── src/          # Fuentes principales (*.cpp)
-├── tests/        # Fuentes de pruebas  (*.cpp)
-├── build/        # Artefactos generados (ignorado por git)
-└── Makefile
-```
- 
-### Recompilación incremental
- 
-El Makefile compila únicamente los archivos `.cpp` que hayan cambiado desde
-la última build, gracias al seguimiento de dependencias de Make sobre los
-archivos objeto (`.o`) en `build/`.
-
----
-
-## Documentación
-Ver la carpeta [docs/](docs/)
-
-## Contribuir
-Ver [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## Licencia
-MIT — ver [LICENSE](LICENSE)
+LICENSE
