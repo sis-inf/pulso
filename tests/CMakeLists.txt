@@ -12,7 +12,7 @@ if(BUILD_WITH_ASAN)
 endif()
 
 add_executable(test_types
-    core/test_types.cpp
+    automatizados/unit/test_types.cpp
 )
 target_include_directories(test_types PRIVATE
     ${PROJECT_SOURCE_DIR}/src
