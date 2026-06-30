@@ -22,8 +22,6 @@
 // Collectors
 #include "collectors/memory/ram_usage.hpp"
 #include "platform/linux/collector_cpu.hpp"
-// TODO: CollectorDisk y CollectorNetwork no implementan ICollector aún.
-//       Pendiente en issue separado.
 
 // Sampler
 #include "sampler/sampler.hpp"
@@ -85,7 +83,6 @@ static int run_once_mode(
             snapshot.metricas.push_back(m);
         }
     }
-
     // 3. FORMATEAR con los formatters OFICIALES
     std::unique_ptr<pulso::formatters::IFormatter> formatter;
 
@@ -170,7 +167,7 @@ int main(int argc, char* argv[]) {
     collectors.push_back(
         std::make_shared<pulso::collectors::memory::CollectorMemory>()
     );
-    // TODO: agregar CollectorDisk y CollectorNetwork cuando implementen ICollector.
+
 
     // =========================================================================
     // MODO ONCE
@@ -220,7 +217,7 @@ int main(int argc, char* argv[]) {
     });
 
     // GET /metrics — pendiente hasta que SystemMonitor se adapte al flujo
-    // actual (Storage + ICollector). Ver issue #270.
+
     // pulso::http::HandleMetrics(server, system_monitor);
 
     // GET /history
