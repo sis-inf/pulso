@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Verificar descripción del PR
         run: |
           if [ -z "${{ github.event.pull_request.body }}" ]; then
@@ -31,7 +31,7 @@ jobs:
         os: [ubuntu-22.04, ubuntu-24.04]
     steps:
       - name: Checkout código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Instalar dependencias
         run: |
           sudo apt-get update
