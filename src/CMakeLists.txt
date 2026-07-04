@@ -21,7 +21,6 @@ target_sources(pulso PRIVATE
     http/handler_history.cpp
     http/handler_metrics.cpp
     platform/linux/collector_cpu.cpp
-    sampler/sampler.cpp
     storage/schema.cpp
     storage/storage.cpp
     utils/console_formatter.cpp
@@ -32,6 +31,14 @@ target_sources(pulso PRIVATE
     src/http/handler_version.hpp
     src/http/handler_version.cpp
 )
+
+# Collector de CPU para Windows: solo se compila en plataforma WIN32.
+# En Linux/macOS este archivo queda completamente excluido del build.
+if(WIN32)
+    target_sources(pulso PRIVATE
+        platform/windows/collector_cpu.cpp
+    )
+endif()
 
 target_compile_features(pulso PRIVATE cxx_std_17)
 
