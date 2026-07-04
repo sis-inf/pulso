@@ -1,5 +1,9 @@
 # Guía de Formatos de Salida (Formatters)
 
+> **Nota:** Este documento describe los formatos disponibles y ejemplos de salida.
+> Si buscas una guía de decisión sobre cuándo usar cada formato,
+> consulta [docs/comparacion-formatos-salida.md](comparacion-formatos-salida.md).
+
 Pulso soporta múltiples formatos de salida para adaptarse a diferentes flujos de trabajo, desde la lectura rápida por parte de usuarios hasta la integración automática con sistemas de monitoreo o análisis de datos.
 
 
