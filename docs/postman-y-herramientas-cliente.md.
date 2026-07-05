@@ -9,10 +9,10 @@ El proyecto dispone de un endpoint que permite exportar una colección de Postma
 1. Abrir Postman.
 2. Seleccionar **Import**.
 3. Elegir la opción **Link**.
-4. Introducir la URL del endpoint:
+4. Introducir la siguiente URL:
 
-```
-GET /export/postman-collection
+```text
+http://localhost:PUERTO/export/postman-collection
 ```
 
 5. Confirmar la importación para que la colección quede disponible en Postman.
@@ -65,7 +65,7 @@ curl http://localhost:PUERTO/export/postman-collection
 
 ## Herramientas alternativas
 
-Si no deseas utilizar Postman, puedes interactuar con la API utilizando otras herramientas compatibles con HTTP, por ejemplo:
+Si no deseas utilizar Postman, también puedes interactuar con la API utilizando otras herramientas compatibles con HTTP, por ejemplo:
 
 - curl
 - HTTPie
