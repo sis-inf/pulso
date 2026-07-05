@@ -1,1 +1,48 @@
+# Postman y herramientas de cliente
 
+## Importar la colección de Postman
+
+El proyecto dispone de un endpoint que permite exportar una colección de Postman lista para importar.
+
+### Pasos
+
+1. Abrir Postman.
+2. Seleccionar **Import**.
+3. Elegir la opción **Link**.
+4. Introducir la URL del endpoint:
+
+```
+GET /export/postman-collection
+```
+
+5. Confirmar la importación para que la colección quede disponible en Postman.
+
+---
+
+## Uso con curl
+
+Si no utilizas Postman, puedes realizar las mismas solicitudes desde la línea de comandos utilizando `curl`.
+
+### Obtener la colección de Postman
+
+```bash
+curl http://localhost:PUERTO/export/postman-collection
+```
+
+### Consultar el endpoint principal
+
+```bash
+curl http://localhost:PUERTO/
+```
+
+---
+
+## Alternativas
+
+También puedes utilizar otras herramientas compatibles con HTTP como:
+
+- curl
+- HTTPie
+- Insomnia
+
+Estas herramientas permiten realizar solicitudes HTTP sin necesidad de utilizar Postman.
