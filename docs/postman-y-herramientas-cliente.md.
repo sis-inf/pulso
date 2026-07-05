@@ -21,28 +21,54 @@ GET /export/postman-collection
 
 ## Uso con curl
 
-Si no utilizas Postman, puedes realizar las mismas solicitudes desde la línea de comandos utilizando `curl`.
+Además de utilizar Postman, es posible consumir los principales endpoints del proyecto desde la línea de comandos mediante `curl`.
 
-### Obtener la colección de Postman
+### Estado del servicio
+
+Permite verificar que el servicio está funcionando correctamente.
+
+```bash
+curl http://localhost:PUERTO/health
+```
+
+### Historial de métricas
+
+Obtiene el historial de métricas almacenadas.
+
+```bash
+curl http://localhost:PUERTO/metrics/history
+```
+
+También es posible filtrar los resultados utilizando parámetros:
+
+```bash
+curl "http://localhost:PUERTO/metrics/history?desde=1700000000&hasta=1700003600&limite=100"
+```
+
+### Métricas en formato Prometheus
+
+Obtiene las métricas en formato compatible con Prometheus.
+
+```bash
+curl http://localhost:PUERTO/metrics/prometheus
+```
+
+### Exportar la colección de Postman
+
+La colección también puede descargarse desde la línea de comandos.
 
 ```bash
 curl http://localhost:PUERTO/export/postman-collection
 ```
 
-### Consultar el endpoint principal
-
-```bash
-curl http://localhost:PUERTO/
-```
-
 ---
 
-## Alternativas
+## Herramientas alternativas
 
-También puedes utilizar otras herramientas compatibles con HTTP como:
+Si no deseas utilizar Postman, puedes interactuar con la API utilizando otras herramientas compatibles con HTTP, por ejemplo:
 
 - curl
 - HTTPie
 - Insomnia
 
-Estas herramientas permiten realizar solicitudes HTTP sin necesidad de utilizar Postman.
+Estas herramientas permiten realizar solicitudes HTTP directamente desde la terminal o mediante una interfaz gráfica.
