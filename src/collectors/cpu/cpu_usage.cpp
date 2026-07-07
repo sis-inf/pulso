@@ -1,4 +1,4 @@
-##include "cpu_usage.hpp"
+#include "cpu_usage.hpp"
 #include "../../collectors/error_recoleccion.hpp"
 #include <fstream>
 #include <sstream>
