@@ -7,6 +7,7 @@ target_sources(pulso PRIVATE
     collectors/memory/ram_usage.cpp
     collectors/network/network_io.cpp
     collectors/network/net_usage.cpp
+    collectors/uptime/uptime_collector.cpp
     config/config.cpp
     core/SystemMonitor.cpp
     formatters/formatter_json.cpp
