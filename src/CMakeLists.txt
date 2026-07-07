@@ -10,6 +10,8 @@ target_sources(pulso PRIVATE
     config/config.cpp
     core/SystemMonitor.cpp
     formatters/formatter_json.cpp
+    formatters/formatter_csv.cpp
+    formatters/formatter_text.cpp
     formatters/formatter_prometheus.cpp
     http/handler_health.cpp
     http/handler_history.cpp
