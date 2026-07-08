@@ -85,7 +85,7 @@ Config mapear(const toml::table& doc)
 Config cargar(const std::string& ruta)
 {
     // Si el archivo no existe:
-    // usar valores por defecto sin excepción
+    // usar valores por defecto sin excepcion
     if (!std::filesystem::exists(ruta)) {
         return porDefecto();
     }
@@ -94,6 +94,7 @@ Config cargar(const std::string& ruta)
         toml::table doc = toml::parse_file(ruta);
 
         Config cfg = mapear(doc);
+
 
         // Validar nivel_log
         if (cfg.nivel_log != "debug" &&
@@ -106,6 +107,7 @@ Config cargar(const std::string& ruta)
             );
         }
 
+
         // Validar output_format
         if (cfg.output_format != "json" &&
             cfg.output_format != "csv" &&
@@ -116,19 +118,27 @@ Config cargar(const std::string& ruta)
             );
         }
 
+
         // Validar puerto
-        if (cfg.servidor.puerto <= 0) {
+        if (cfg.servidor.puerto < 1 ||
+            cfg.servidor.puerto > 65535) {
+
             throw std::invalid_argument(
-                "Valor inválido para puerto"
+                "Valor inválido para puerto: " +
+                std::to_string(cfg.servidor.puerto)
             );
         }
 
+
         // Validar intervalo
         if (cfg.sampler.intervalo_segundos <= 0) {
+
             throw std::invalid_argument(
-                "Valor inválido para intervalo_segundos"
+                "Valor inválido para intervalo_segundos: " +
+                std::to_string(cfg.sampler.intervalo_segundos)
             );
         }
+
 
         return cfg;
 
@@ -149,6 +159,7 @@ Config cargar(const std::string& ruta)
     catch (const std::exception& e) {
 
         throw ErrorConfig(e.what());
+
     }
 }
 
