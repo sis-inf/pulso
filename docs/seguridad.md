@@ -59,8 +59,50 @@ A continuación se describen las principales consideraciones de seguridad:
   - Validar el comportamiento en ambos entornos.
   - Evitar dependencias inseguras o específicas sin validación.
 
+
+---
+
+## 7 Seguridad del Servidor HTTP
+
+### Amenazas específicas
+Con la incorporación de múltiples endpoints (como `/metrics`, `/health`, `/alerts`) se identifican los siguientes riesgos:
+
+1. **Acceso no autorizado a métricas y datos**
+   - Actualmente el servicio no incluye sistema de autenticación ni autorización. Cualquier usuario con acceso a la red puede consultar métricas internas, estados y configuración.
+
+2. **Ataques de tipo DoS (Denegación de Servicio)**
+   - Un atacante podría enviar un volumen elevado de peticiones de forma rápida para saturar el servidor y reducir su rendimiento o detenerlo.
+
+---
+
+### Medidas de mitigación recomendadas
+
+🔹 **Vincular el servidor solo a `localhost`**
+Configurar el puerto HTTP para que solo sea accesible desde el mismo equipo donde se ejecuta Pulso:
+```toml
+http.bind = "127.0.0.1"
+http.port = 8080
+```
+
+Esto evita que el servicio sea accesible desde redes externas.
+ 
+🔹 Protección mediante cortafuegos (Firewall)
+Restringir el acceso al puerto usado por Pulso mediante reglas de firewall:
+ 
+- Permitir conexiones solo desde IPs confiables o dentro de la red local.
+​
+- Bloquear intentos de acceso desde direcciones desconocidas.
+ 
+🔹 Control de tasa de peticiones (futura mejora)
+Se planea implementar limitación de velocidad para evitar abusos y ataques DoS.
+ 
+  
+Nota importante: En la versión actual no existe autenticación para los endpoints HTTP. No se recomienda exponer el servicio directamente a internet público sin capas adicionales de seguridad.
+
 ## Notas finales
 
 - La seguridad es un proceso continuo y debe revisarse constantemente.
 - Estas consideraciones pueden ampliarse a medida que el proyecto evolucione.
 - Pulso prioriza un enfoque seguro sin comprometer su ligereza y rendimiento.
+
+  

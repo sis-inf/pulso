@@ -51,3 +51,10 @@ jobs:
           xargs clang-tidy --config-file=.clang-tidy --warnings-as-errors='' -- -std=c++17
       - name: Ejecutar tests con ctest
         run: cd build && ctest --output-on-failure
+      - name: Ejecutar detección de memory leaks con Valgrind
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y valgrind
+          valgrind --leak-check=full --error-exitcode=1 ./build/tests/pulso_tests

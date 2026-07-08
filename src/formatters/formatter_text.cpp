@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <ctime>
 
+#include "utils/formato_bytes.hpp"
+
 namespace pulso::formatters {
 
 std::string FormatterText::formato() const {
@@ -24,53 +26,46 @@ static std::string formatearTimestamp(std::int64_t ts) {
     return oss.str();
 }
 
-// Convierte bytes a GB con 1 decimal
-static double bytesAGB(double bytes) {
-    return bytes / (1024.0 * 1024.0 * 1024.0);
-}
-
-// Convierte bytes a KB/s con 1 decimal
-static double bytesAKBs(double bytes) {
-    return bytes / 1024.0;
-}
-
 std::string FormatterText::formatear(
     const pulso::core::Snapshot& snapshot
 ) const {
-    // Extraer métricas del snapshot
+    // Extraer métricas del snapshot (valores crudos en bytes / bytes-por-segundo)
     double cpu_pct = 0.0;
-    double ram_usado_gb = 0.0;
-    double ram_total_gb = 0.0;
-    double disco_usado_gb = 0.0;
-    double disco_total_gb = 0.0;
-    double net_rx_kbs = 0.0;
-    double net_tx_kbs = 0.0;
+    double ram_usado_bytes = 0.0;
+    double ram_total_bytes = 0.0;
+    double disco_usado_bytes = 0.0;
+    double disco_total_bytes = 0.0;
+    double net_rx_bytes = 0.0;
+    double net_tx_bytes = 0.0;
 
     for (const auto& metrica : snapshot.metricas) {
         if (metrica.nombre == "cpu.usage" || metrica.nombre == "cpu") {
             cpu_pct = metrica.valor;
         } else if (metrica.nombre == "ram.used" || metrica.nombre == "ram.usado") {
-            ram_usado_gb = bytesAGB(metrica.valor);
+            ram_usado_bytes = metrica.valor;
         } else if (metrica.nombre == "ram.total" || metrica.nombre == "ram.total") {
-            ram_total_gb = bytesAGB(metrica.valor);
+            ram_total_bytes = metrica.valor;
         } else if (metrica.nombre == "disk.used" || metrica.nombre == "disco.usado") {
-            disco_usado_gb = bytesAGB(metrica.valor);
+            disco_usado_bytes = metrica.valor;
         } else if (metrica.nombre == "disk.total" || metrica.nombre == "disco.total") {
-            disco_total_gb = bytesAGB(metrica.valor);
+            disco_total_bytes = metrica.valor;
         } else if (metrica.nombre == "network.rx" || metrica.nombre == "net.rx") {
-            net_rx_kbs = bytesAKBs(metrica.valor);
+            net_rx_bytes = metrica.valor;
         } else if (metrica.nombre == "network.tx" || metrica.nombre == "net.tx") {
-            net_tx_kbs = bytesAKBs(metrica.valor);
+            net_tx_bytes = metrica.valor;
         }
     }
 
-    // Formatear línea: timestamp | CPU: 45.3% | RAM: 2.1/8.0 GB | Disco: 120/500 GB | Red: 1.2/0.8 KB/s
+    // Formatear línea: timestamp | CPU: 45.3% | RAM: 2.1 GB/8.0 GB | Disco: 120.0 GB/500.0 GB | Red: 1.2 KB/s/800.0 B/s
     std::ostringstream oss;
     oss << formatearTimestamp(snapshot.timestamp)
         << " | CPU: " << std::fixed << std::setprecision(1) << cpu_pct << "%"
-        << " | RAM: " << ram_usado_gb << "/" << ram_total_gb << " GB"
-        << " | Disco: " << disco_usado_gb << "/" << disco_total_gb << " GB"
-        << " | Red: " << net_rx_kbs << "/" << net_tx_kbs << " KB/s";
+        << " | RAM: " << pulso::utils::formatearBytesHumanos(ram_usado_bytes)
+        << "/" << pulso::utils::formatearBytesHumanos(ram_total_bytes)
+        << " | Disco: " << pulso::utils::formatearBytesHumanos(disco_usado_bytes)
+        << "/" << pulso::utils::formatearBytesHumanos(disco_total_bytes)
+        << " | Red: " << pulso::utils::formatearBytesHumanos(net_rx_bytes) << "/s"
+        << "/" << pulso::utils::formatearBytesHumanos(net_tx_bytes) << "/s";
 
     return oss.str();
 }

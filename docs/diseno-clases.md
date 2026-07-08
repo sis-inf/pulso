@@ -95,6 +95,75 @@ Red:
 
 ---
 
+
+---
+
+## Clase GestorAlertas
+
+| Elemento            | Detalle                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| Responsabilidad     | Administra la configuración, evaluación y emisión de alertas; implementa `IGestorAlertas`. |
+| Atributos principales | umbrales: lista de `AlertaUmbral`, colecciones: lista de `ICollector` |
+| Metodos principales | evaluar(), registrarUmbral(), eliminarUmbral(), notificar()             |
+
+**Descripción**: Recibe datos de los recolectores, compara con umbrales definidos y dispara alertas cuando se cumplen las condiciones.
+
+---
+
+## Clase AlertaUmbral
+
+| Elemento            | Detalle                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| Responsabilidad     | Define regla de activación por valor límite; implementa `IAlerta`.     |
+| Atributos principales | tipoMetrica: string, valorLimite: float, esSuperior: bool, mensaje: string |
+| Metodos principales | evaluar(valor: float): bool, obtenerMensaje(): string                   |
+
+**Descripción**: Alerta concreta que se activa al superar o caer por debajo de un umbral configurado.
+
+---
+
+## Manejadores HTTP nuevos
+
+### HandlerMetricas
+- **Responsabilidad**: Endpoint `GET /metrics` para exponer métricas en formato Prometheus.
+- **Interfaz**: `IHandlerHTTP`
+- **Métodos**: `handle(Request, Response)`
+
+### HandlerHealth
+- **Responsabilidad**: Endpoint `GET /health` para reportar estado general del servicio.
+- **Interfaz**: `IHandlerHTTP`
+- **Métodos**: `handle(Request, Response)`
+
+### HandlerAlertas
+- **Responsabilidad**: Consultar alertas activas e historial.
+- **Interfaz**: `IHandlerHTTP`
+- **Métodos**: `handle(Request, Response)`
+
+---
+
+## Recolectores adicionales
+
+### CollectorTemperatura
+- **Responsabilidad**: Leer sensores térmicos del sistema.
+- **Interfaz**: `ICollector`
+- **Métodos**: `collect()`
+
+### CollectorUptime
+- **Responsabilidad**: Obtener tiempo de actividad desde `/proc/uptime`.
+- **Interfaz**: `ICollector`
+- **Métodos**: `collect()`
+
+### CollectorLoadAvg
+- **Responsabilidad**: Obtener promedio de carga desde `/proc/loadavg`.
+- **Interfaz**: `ICollector`
+- **Métodos**: `collect()`
+
+### CollectorProcesos
+- **Responsabilidad**: Listar y resumir procesos activos.
+- **Interfaz**: `ICollector`
+- **Métodos**: `collect()`
+
+
 ## Resumen de clases
 
 | Clase | Responsabilidad principal |
@@ -104,3 +173,20 @@ Red:
 | `MemoryInfo` | Metricas de memoria RAM (uso y disponibilidad) |
 | `DiskInfo` | Metricas de almacenamiento en disco (uso y espacio libre) |
 | `NetworkInfo` | Metricas de red (velocidad y estado de conexion) |
+| `GestorAlertas`      | Coordinar evaluación y disparo de alertas |
+| `AlertaUmbral`        | Definir reglas de alerta basadas en umbrales |
+| `HandlerMetricas`     | Exponer métricas por HTTP en formato Prometheus |
+| `HandlerHealth`      | Responder estado de salud del servicio |
+| `HandlerAlertas`      | Consultar alertas activas e historial |
+| `CollectorTemperatura`| Recolectar temperatura de sensores |
+| `CollectorUptime`     | Recolectar tiempo de actividad |
+| `CollectorLoadAvg`    | Recolectar promedio de carga del sistema |
+| `CollectorProcesos`   | Recolectar lista y estado de procesos |
+
+---
+
+## Relaciones entre módulos
+- Todos los recolectores implementan **`ICollector`** y son usados por **`SystemMonitor`** y **`GestorAlertas`**.
+- **`GestorAlertas`** trabaja con objetos **`AlertaUmbral`**.
+- Los manejadores HTTP leen datos del núcleo y pueden consultar el estado de **`GestorAlertas`**.
+

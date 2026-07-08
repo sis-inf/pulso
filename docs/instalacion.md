@@ -99,3 +99,47 @@ build\bin\Release\pulso.exe
 ```bash
 cmake -B build -DPULSO_BUILD_TESTS=OFF
 ```
+
+---
+
+## Instalación de dependencias
+
+### Ubuntu 22.04 LTS
+```bash
+sudo apt update
+sudo apt install build-essential cmake git
+# g++ versión ≥ 11 ya está disponible por defecto
+```
+## Ubuntu 24.04 LTS
+```bash
+sudo apt update
+sudo apt install build-essential cmake git
+# Incluye versiones más nuevas de compiladores y herramientas
+```
+## Verificación de versiones
+ 
+Antes de compilar, confirma que cumples los requisitos:
+```bash
+g++ --version   # debe mostrar ≥ 11
+cmake --version # debe mostrar ≥ 3.16
+```
+## Problemas comunes y soluciones
+ 
+1. «g++: error: unrecognized command‑line option ‘‑std=c++20’»
+- Causa: Versión de compilador antigua.
+- Solución: Actualizar paquetes o usar distribución soportada:
+```bash
+sudo apt upgrade g++
+```
+2. «CMake Error: CMAKE_CXX_COMPILER not set, after EnableLanguage»
+- Causa: Falta instalar el paquete completo de compiladores.
+- Solución:
+```bash
+sudo apt install --reinstall build-essential
+```
+3. «fatal error: ‘filesystem’ file not found»
+- Causa: La librería  std::filesystem  requiere C++17 o superior y compilador moderno.
+- Solución: Asegurar bandera  -std=c++17  o  -std=c++20  y verificar versión ≥ 11.
+```bash
+g++ --version
+```
