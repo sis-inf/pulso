@@ -168,13 +168,32 @@ int main(int argc, char* argv[]) {
     // 4. Collectors (comun para modo once Y modo daemon)
     // -------------------------------------------------------------------------
     std::vector<std::shared_ptr<pulso::collectors::ICollector>> collectors;
-    collectors.push_back(std::make_shared<pulso::collectors::CollectorCPU>());
-    collectors.push_back(
-        std::make_shared<pulso::collectors::memory::CollectorMemory>()
-    );
-    collectors.push_back(
+
+    // Si no se pasa --metrics mantiene comportamiento actual:
+    // todos los collectors activos por defecto
+    bool usar_todos = cli_opts.monitor.cpu &&
+                  cli_opts.monitor.ram &&
+                  cli_opts.monitor.disk;
+
+    if (cli_opts.monitor.cpu || usar_todos)
+    {
+       collectors.push_back(
+          std::make_shared<pulso::collectors::CollectorCPU>()
+       );
+    }
+
+    if (cli_opts.monitor.ram || usar_todos)
+    {
+       collectors.push_back(
+          std::make_shared<pulso::collectors::memory::CollectorMemory>()
+       );
+    }
+
+    // CollectorBateria se mantiene activo porque todavía no existe flag dedicado
+     collectors.push_back(
         std::make_shared<pulso::collectors::bateria::CollectorBateria>()
-    );
+     );
+
     // TODO: agregar CollectorDisk y CollectorNetwork cuando implementen ICollector.
 
     // =========================================================================
