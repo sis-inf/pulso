@@ -1,31 +1,27 @@
 #include "config.hpp"
 
-// toml++ — header-only, incluir una sola vez en la TU que lo necesite.
-// Si el proyecto usa la variante multi-header, reemplaza por <toml++/toml.hpp>.
+// toml++ = header-only, incluir una sola vez en la TU que lo necesite.
 #define TOML_EXCEPTIONS 1
 #include <toml++/toml.hpp>
 
 #include <filesystem>
-#include <format>      // C++23; usa fmt:: o snprintf si el compilador es C++17
+#include <format>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <cstdlib>
 
 namespace pulso::config {
-
-// ---------------------------------------------------------------------------
-// Helpers internos
-// ---------------------------------------------------------------------------
 
 namespace {
 
 /// Lee un valor escalar del nodo TOML; si no existe devuelve `porDefecto`.
 template <typename T>
 T leer(const toml::table& tabla,
-       std::string_view   seccion,
-       std::string_view   clave,
-       T                  porDefecto)
+       std::string_view seccion,
+       std::string_view clave,
+       T porDefecto)
 {
     if (auto* sec = tabla[seccion].as_table()) {
         if (auto nodo = (*sec)[clave]) {
@@ -34,22 +30,54 @@ T leer(const toml::table& tabla,
             }
         }
     }
+
     return porDefecto;
 }
 
 /// Sobrecarga sin sección (claves en la raíz del documento).
 template <typename T>
 T leer(const toml::table& tabla,
-       std::string_view   clave,
-       T                  porDefecto)
+       std::string_view clave,
+       T porDefecto)
 {
     if (auto nodo = tabla[clave]) {
         if (auto val = nodo.value<T>()) {
             return *val;
         }
     }
+
     return porDefecto;
 }
+
+
+/// Aplica variables de entorno con prioridad sobre TOML.
+void aplicarEnv(Config& cfg)
+{
+    if (const char* v = std::getenv("PULSO_SERVIDOR_HOST")) {
+        cfg.servidor.host = v;
+    }
+
+    if (const char* v = std::getenv("PULSO_SERVIDOR_PUERTO")) {
+        cfg.servidor.puerto = static_cast<uint16_t>(std::stoi(v));
+    }
+
+    if (const char* v = std::getenv("PULSO_SAMPLER_INTERVALO_SEGUNDOS")) {
+        cfg.sampler.intervalo_segundos = std::stoll(v);
+    }
+
+    if (const char* v = std::getenv("PULSO_STORAGE_RUTA_DB")) {
+        cfg.storage.ruta_db = v;
+    }
+
+    if (const char* v = std::getenv("PULSO_NIVEL_LOG")) {
+        cfg.nivel_log = v;
+    }
+
+    if (const char* v = std::getenv("PULSO_OUTPUT_FORMAT")) {
+        cfg.output_format = v;
+    }
+}
+
 
 /// Construye un Config a partir de un toml::table ya parseado.
 Config mapear(const toml::table& doc)
@@ -57,43 +85,60 @@ Config mapear(const toml::table& doc)
     Config cfg;
 
     // [servidor]
-    cfg.servidor.host  = leer<std::string>(doc, "servidor", "host",  cfg.servidor.host);
-    cfg.servidor.puerto = leer<int64_t>   (doc, "servidor", "puerto", cfg.servidor.puerto);
+    cfg.servidor.host =
+        leer<std::string>(doc, "servidor", "host", cfg.servidor.host);
+
+    cfg.servidor.puerto =
+        leer<int64_t>(doc, "servidor", "puerto", cfg.servidor.puerto);
+
 
     // [sampler]
     cfg.sampler.intervalo_segundos =
-        leer<int64_t>(doc, "sampler", "intervalo_segundos", cfg.sampler.intervalo_segundos);
+        leer<int64_t>(doc, "sampler", "intervalo_segundos",
+                      cfg.sampler.intervalo_segundos);
+
 
     // [storage]
-    cfg.storage.ruta_db = leer<std::string>(doc, "storage", "ruta_db", cfg.storage.ruta_db);
+    cfg.storage.ruta_db =
+        leer<std::string>(doc, "storage", "ruta_db",
+                          cfg.storage.ruta_db);
+
 
     // nivel_log (clave raíz)
-    cfg.nivel_log = leer<std::string>(doc, "nivel_log", cfg.nivel_log);
+    cfg.nivel_log =
+        leer<std::string>(doc, "nivel_log", cfg.nivel_log);
+
 
     // output_format (clave raíz)
-    cfg.output_format = leer<std::string>(doc, "output_format", cfg.output_format);
+    cfg.output_format =
+        leer<std::string>(doc, "output_format",
+                          cfg.output_format);
+
+
+    aplicarEnv(cfg);
 
     return cfg;
 }
 
 } // namespace anónimo
 
-// ---------------------------------------------------------------------------
-// API pública
-// ---------------------------------------------------------------------------
 
 Config cargar(const std::string& ruta)
 {
     // Si el archivo no existe:
     // usar valores por defecto sin excepción
     if (!std::filesystem::exists(ruta)) {
-        return porDefecto();
+        Config cfg = porDefecto();
+        aplicarEnv(cfg);
+        return cfg;
     }
+
 
     try {
         toml::table doc = toml::parse_file(ruta);
 
         Config cfg = mapear(doc);
+
 
         // Validar nivel_log
         if (cfg.nivel_log != "debug" &&
@@ -106,15 +151,18 @@ Config cargar(const std::string& ruta)
             );
         }
 
+
         // Validar output_format
         if (cfg.output_format != "json" &&
             cfg.output_format != "csv" &&
             cfg.output_format != "prometheus") {
 
             throw std::invalid_argument(
-                "Valor inválido para output_format: " + cfg.output_format
+                "Valor inválido para output_format: " +
+                cfg.output_format
             );
         }
+
 
         // Validar puerto
         if (cfg.servidor.puerto <= 0) {
@@ -123,12 +171,14 @@ Config cargar(const std::string& ruta)
             );
         }
 
+
         // Validar intervalo
         if (cfg.sampler.intervalo_segundos <= 0) {
             throw std::invalid_argument(
                 "Valor inválido para intervalo_segundos"
             );
         }
+
 
         return cfg;
 
@@ -152,9 +202,10 @@ Config cargar(const std::string& ruta)
     }
 }
 
+
 Config porDefecto()
 {
-    return Config{};   // Todos los campos usan sus inicializadores por defecto.
+    return Config{};
 }
 
 } // namespace pulso::config
