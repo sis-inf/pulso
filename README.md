@@ -278,6 +278,10 @@ Ver la carpeta [docs/](docs/)
 
 Guía completa de instalación:
 
+## Documentación
+
+[Índice General de la Documentación](docs/indice-general.md)
+
 [docs/instalacion.md](docs/instalacion.md)
 
 ## Contribuir
