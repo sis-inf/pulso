@@ -4,11 +4,11 @@
 
 | Módulo | Responsabilidad |
 |--------|----------------|
-| **Collector** | Recolecta métricas del sistema (CPU, RAM, disco, red) desde `/proc` y `/sys` |
+| **Collector** | Recolecta métricas del sistema (CPU, RAM, disco, red, procesos, temperatura y uptime) desde `/proc` y `/sys` |
 | **Storage** | Almacena las métricas en memoria o disco para análisis histórico |
 | **Analyzer** | Procesa las métricas y detecta anomalías o tendencias |
 | **API** | Expone las métricas vía HTTP para consultas externas |
-| **Alert Manager** | Genera alertas cuando las métricas superan umbrales definidos |
+| **Alert Manager** | Gestiona alertas mediante AlertaUmbral y GestorAlertas |
 | **Logger** | Registra eventos, errores y actividad del sistema |
 
 ## 1. Introducción
@@ -48,7 +48,44 @@ El sistema se divide en módulos fundamentales, cada uno cumpliendo una función
 * **Almacenamiento de Métricas:** Estructura de persistencia encargada de mantener el historial de las métricas recolectadas para análisis temporal y comparativas.
 * **Módulo de Alertas:** Motor de reglas que evalúa las métricas en tiempo real. Dispara notificaciones cuando se superan umbrales críticos (ej. CPU > 90%).
 * **Panel Web (Frontend):** Interfaz gráfica de usuario que permite la visualización intuitiva mediante gráficas dinámicas y dashboards de estado.
+### Subsistema de Alertas
 
+El sistema incorpora un subsistema de alertas encargado de detectar condiciones críticas en las métricas recolectadas.
+
+#### Componentes
+
+- **AlertaUmbral:** Evalúa métricas individuales y determina si superan los umbrales configurados.
+- **GestorAlertas:** Administra las alertas generadas y coordina su consulta mediante la API.
+
+#### Flujo de Alertas
+
+1. Los collectors generan métricas periódicamente.
+2. Las métricas son procesadas por el sistema.
+3. AlertaUmbral verifica si existen valores fuera de los límites establecidos.
+4. GestorAlertas registra y expone las alertas activas.
+
+## HTTP Handlers
+
+La API HTTP del sistema expone distintos handlers encargados de responder solicitudes de monitoreo y administración.
+
+| Handler | Responsabilidad |
+|----------|----------------|
+| **handler_health** | Proporciona información sobre el estado operativo del sistema y permite realizar verificaciones de salud (*health checks*). |
+| **handler_config** | Gestiona consultas relacionadas con la configuración del sistema. |
+| **handler_alerts** | Permite consultar y exponer las alertas generadas por el subsistema de alertas. |
+
+Estos handlers actúan como punto de entrada para clientes HTTP y facilitan la integración con herramientas externas de monitoreo y observabilidad.
+
+### Nuevos Collectors
+
+Además de las métricas tradicionales de CPU, memoria y red, Pulso incorpora nuevos collectors especializados:
+
+| Collector | Descripción |
+|------------|------------|
+| **Temperature Collector** | Obtiene la temperatura del sistema desde sensores disponibles. |
+| **Uptime Collector** | Reporta el tiempo de actividad continuo del sistema. |
+| **Load Average Collector** | Obtiene el promedio de carga del sistema para diferentes intervalos de tiempo. |
+| **Process Collector** | Obtiene estadísticas de procesos del sistema, incluyendo procesos en ejecución, bloqueados y total de procesos mediante `/proc/stat` y `/proc/loadavg`. |
 ---
 
 ## 4. Tecnologías Utilizadas
@@ -84,7 +121,16 @@ graph TD
         C -->|Fetch Data| G[Panel Web]
         G -->|Visualizacion| H[Usuario Final]
     end
+    D --> H[AlertaUmbral]
+    H --> I[GestorAlertas]
 
+    A --> J[Temperature Collector]
+    A --> K[Uptime Collector]
+    A --> L[Load Average Collector]
+
+    G --> M[handler_health]
+    G --> N[handler_config]
+    G --> O[handler_alerts]
     style A fill:#f96,stroke:#333,stroke-width:2px
     style G fill:#6cf,stroke:#333,stroke-width:2px
 ```

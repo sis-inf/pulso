@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Criterio de aceptación: Desactivado (OFF) por defecto para compilaciones limpias
 option(BUILD_TESTS "Build tests" OFF)
 option(PULSO_BUILD_TESTS "Build tests (Legacy)" OFF)
+option(BUILD_WITH_ASAN "Build tests with AddressSanitizer" OFF)
 
 # Si el usuario activa cualquiera de las dos opciones, sincronizamos el estado
 if(BUILD_TESTS OR PULSO_BUILD_TESTS)

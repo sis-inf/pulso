@@ -1,0 +1,8 @@
+# Regla * como fallback para cualquier archivo no listado abajo
+* @erwinsaul
+
+# Reglas específicas por módulo usando el formato /directorio/ @usuario
+/src/collectors/* @LinoSimon20 @Alex-Calle-P @Vizalla @YORDY-SG
+/src/http/* @Alex-Calle-P @Vizalla @YORDY-SG @LinoSimon20
+/src/formatters/* @Vizalla @YORDY-SG @LinoSimon20 @Alex-Calle-P
+/docs/* @YORDY-SG @LinoSimon20 @Alex-Calle-P @Vizalla

@@ -21,6 +21,7 @@
 
 // Collectors
 #include "collectors/memory/ram_usage.hpp"
+#include "collectors/bateria/bateria_collector.hpp"
 #include "platform/linux/collector_cpu.hpp"
 // TODO: CollectorDisk y CollectorNetwork no implementan ICollector aún.
 //       Pendiente en issue separado.
@@ -38,6 +39,7 @@
 #include "http/handler_history.hpp"
 #include "http/handler_metrics.hpp"
 #include "http/handler_prometheus.hpp"
+#include "http/handler_version.hpp"
 
 // CLI
 #include "cli/arg_parser.h"
@@ -160,16 +162,38 @@ int main(int argc, char* argv[]) {
     else if (cfg.nivel_log == "error") log.setMinLevel(LogLevel::ERROR);
     else                               log.setMinLevel(LogLevel::INFO);
 
-    log.info("pulso v0.1.0 iniciando");
+    log.info("pulso v" + pulso::APP_VERSION + " iniciando");
 
     // -------------------------------------------------------------------------
     // 4. Collectors (comun para modo once Y modo daemon)
     // -------------------------------------------------------------------------
     std::vector<std::shared_ptr<pulso::collectors::ICollector>> collectors;
-    collectors.push_back(std::make_shared<pulso::collectors::CollectorCPU>());
-    collectors.push_back(
-        std::make_shared<pulso::collectors::memory::CollectorMemory>()
-    );
+
+    // Si no se pasa --metrics mantiene comportamiento actual:
+    // todos los collectors activos por defecto
+    bool usar_todos = cli_opts.monitor.cpu &&
+                  cli_opts.monitor.ram &&
+                  cli_opts.monitor.disk;
+
+    if (cli_opts.monitor.cpu || usar_todos)
+    {
+       collectors.push_back(
+          std::make_shared<pulso::collectors::CollectorCPU>()
+       );
+    }
+
+    if (cli_opts.monitor.ram || usar_todos)
+    {
+       collectors.push_back(
+          std::make_shared<pulso::collectors::memory::CollectorMemory>()
+       );
+    }
+
+    // CollectorBateria se mantiene activo porque todavía no existe flag dedicado
+     collectors.push_back(
+        std::make_shared<pulso::collectors::bateria::CollectorBateria>()
+     );
+
     // TODO: agregar CollectorDisk y CollectorNetwork cuando implementen ICollector.
 
     // =========================================================================
@@ -218,6 +242,17 @@ int main(int argc, char* argv[]) {
             "application/json"
         );
     });
+
+    // GET /version 
+server.Get("/version", [](
+    const httplib::Request&,
+    httplib::Response& res) 
+{
+    res.set_content(
+        pulso::http::handleVersion(),
+        "application/json"
+    );
+});
 
     // GET /metrics — pendiente hasta que SystemMonitor se adapte al flujo
     // actual (Storage + ICollector). Ver issue #270.

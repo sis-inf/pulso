@@ -3,8 +3,16 @@ message(STATUS "Tests are enabled (PULSO_BUILD_TESTS=ON)")
 find_package(GTest REQUIRED)
 include(GoogleTest)
 
+# Apply AddressSanitizer flags if BUILD_WITH_ASAN is enabled
+if(BUILD_WITH_ASAN)
+    message(STATUS "Building tests with AddressSanitizer enabled")
+    set(ASAN_FLAGS "-fsanitize=address,undefined -fno-omit-frame-pointer")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASAN_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ASAN_FLAGS}")
+endif()
+
 add_executable(test_types
-    core/test_types.cpp
+    automatizados/unit/test_types.cpp
 )
 target_include_directories(test_types PRIVATE
     ${PROJECT_SOURCE_DIR}/src
@@ -65,3 +73,16 @@ target_link_libraries(test_formatter_prometheus PRIVATE
     GTest::gtest_main
 )
 gtest_discover_tests(test_formatter_prometheus)
+
+add_executable(test_ram_usage
+    automatizados/test_ram_usage.cpp
+    ${PROJECT_SOURCE_DIR}/src/collectors/memory/ram_usage.cpp
+)
+target_include_directories(test_ram_usage PRIVATE
+    ${PROJECT_SOURCE_DIR}/src
+)
+target_link_libraries(test_ram_usage PRIVATE
+    GTest::gtest
+    GTest::gtest_main
+)
+gtest_discover_tests(test_ram_usage)

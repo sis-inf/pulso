@@ -7,6 +7,38 @@
 
 namespace pulso::storage {
 
+namespace {
+
+void pruneSnapshots(SQLite::Database& db, std::size_t maxEntries) {
+    SQLite::Statement countQuery(db, "SELECT COUNT(*) FROM snapshots;");
+    countQuery.executeStep();
+
+    const auto total = static_cast<std::size_t>(
+        countQuery.getColumn(0).getInt64()
+    );
+
+    if (total <= maxEntries) {
+        return;
+    }
+
+    const auto toDelete = static_cast<std::int64_t>(total - maxEntries);
+
+    SQLite::Statement deleteQuery(
+        db,
+        "DELETE FROM snapshots "
+        "WHERE rowid IN ("
+        "SELECT rowid FROM snapshots "
+        "ORDER BY timestamp ASC, rowid ASC "
+        "LIMIT ?"
+        ");"
+    );
+
+    deleteQuery.bind(1, toDelete);
+    deleteQuery.exec();
+}
+
+} // namespace
+
 Storage::Storage(const std::string& dbPath)
     : db_(dbPath, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE)
 {
@@ -15,6 +47,11 @@ Storage::Storage(const std::string& dbPath)
 
     // Inicializar esquema (idempotente)
     pulso::storage::inicializarEsquema(db_);
+}
+
+void Storage::setMaxEntries(std::size_t max) {
+    maxEntries_ = max;
+    pruneSnapshots(db_, maxEntries_);
 }
 
 void Storage::exportToCSV(const std::string& ruta_archivo) const {
@@ -99,6 +136,8 @@ void Storage::save(const pulso::core::Snapshot& snapshot) {
     query.bind(11, static_cast<int64_t>(getMetricValue("network.tx_bytes")));
 
     query.exec();
+
+    pruneSnapshots(db_, maxEntries_);
 }
 
 // Convierte una fila de la query en un Snapshot
