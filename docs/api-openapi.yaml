@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: Pulso API
+  description: API HTTP del agente de monitoreo Pulso
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor local por defecto
+paths:
+  /health:
+    get:
+      summary: Estado del servicio
+      description: Verifica el estado general del servicio Pulso
+      responses:
+        200:
+          description: Servicio activo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+                  uptime:
+                    type: integer
+                    example: 86400
+        500:
+          description: Error interno del servidor
+  /metrics:
+    get:
+      summary: Metricas actuales
+      description: Devuelve las metricas actuales del sistema monitoreado
+      parameters:
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, prometheus, text]
+          description: Formato de respuesta
+      responses:
+        200:
+          description: Metricas del sistema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cpu:
+                    type: number
+                    example: 21.4
+                  memory:
+                    type: number
+                    example: 58.2
+                  disk:
+                    type: number
+                    example: 71.8
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: 2026-06-07T12:30:00Z
+        500:
+          description: Error interno del servidor
+  /metrics/history:
+    get:
+      summary: Historial de metricas
+      description: Obtiene el historial de metricas registradas
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 5
+          description: Cantidad maxima de registros a devolver
+      responses:
+        200:
+          description: Historial de metricas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cpu:
+                          type: number
+                        memory:
+                          type: number
+                        timestamp:
+                          type: string
+                          format: date-time
+        400:
+          description: Parametros invalidos
+        500:
+          description: Error interno del servidor
+  /config:
+    get:
+      summary: Configuracion activa
+      description: Devuelve la configuracion activa del servidor Pulso
+      responses:
+        200:
+          description: Configuracion del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  port:
+                    type: integer
+                    example: 8080
+                  refreshInterval:
+                    type: integer
+                    example: 5
+                  alertsEnabled:
+                    type: boolean
+                    example: true
+        500:
+          description: Error interno del servidor
+  /alerts:
+    get:
+      summary: Alertas activas
+      description: Lista las alertas activas generadas por el sistema
+      responses:
+        200:
+          description: Lista de alertas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alerts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        severity:
+                          type: string
+                          enum: [LOW, MEDIUM, HIGH, CRITICAL]
+                        message:
+                          type: string
+        500:
+          description: Error interno del servidor
+  /version:
+    get:
+      summary: Version del agente
+      description: Devuelve la version actual del agente Pulso
+      responses:
+        200:
+          description: Version del agente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: 0.1.0
+        500:
+          description: Error interno del servidor
+  /diagnostico:
+    get:
+      summary: Diagnostico del sistema
+      description: Devuelve informacion de diagnostico del agente
+      responses:
+        200:
+          description: Informacion de diagnostico
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  estado:
+                    type: string
+                  colectores_activos:
+                    type: array
+                    items:
+                      type: string
+        500:
+          description: Error interno del servidor
+  /processes/top:
+    get:
+      summary: Procesos principales
+      description: Devuelve los procesos que mas recursos consumen
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 10
+          description: Cantidad de procesos a devolver
+      responses:
+        200:
+          description: Lista de procesos principales
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pid:
+                          type: integer
+                        nombre:
+                          type: string
+                        cpu:
+                          type: number
+                        memoria:
+                          type: number
+        500:
+          description: Error interno del servidor
