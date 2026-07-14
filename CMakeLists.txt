@@ -9,6 +9,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_TESTS "Build tests" OFF)
 option(PULSO_BUILD_TESTS "Build tests (Legacy)" OFF)
 option(BUILD_WITH_ASAN "Build tests with AddressSanitizer" OFF)
+# Enlace estático: OFF por defecto para no cambiar el comportamiento estándar de build.
+# Activar con -DPULSO_STATIC_LINK=ON para producir un binario standalone sin dependencias dinámicas.
+option(PULSO_STATIC_LINK "Link statically against libgcc, libstdc++ and system libs" OFF)
+
+if(PULSO_STATIC_LINK)
+    target_link_options(pulso PRIVATE -static-libgcc -static-libstdc++)
+endif()
 
 # Si el usuario activa cualquiera de las dos opciones, sincronizamos el estado
 if(BUILD_TESTS OR PULSO_BUILD_TESTS)
