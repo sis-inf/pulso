@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Verificar descripción del PR
         run: |
           if [ -z "${{ github.event.pull_request.body }}" ]; then
@@ -22,6 +24,28 @@ jobs:
             exit 1
           fi
           echo "✅ PR referencia un issue"
+      - name: Verificar actualización de CHANGELOG
+        run: |
+          LABELS="${{ join(github.event.pull_request.labels.*.name, ' ') }}"
+  
+          if echo "$LABELS" | grep -qw "skip-changelog"; then
+            echo "✅ Verificación omitida por etiqueta skip-changelog"
+            exit 0
+          fi
+  
+          git fetch origin ${{ github.base_ref }}
+
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          if echo "$CHANGED_FILES" | grep -q "^src/"; then
+            if ! echo "$CHANGED_FILES" | grep -qx "CHANGELOG.md"; then
+              echo "❌ Este PR modifica archivos en src/ pero no actualiza CHANGELOG.md."
+              echo "Agrega una entrada al CHANGELOG o aplica la etiqueta skip-changelog si corresponde."
+              exit 1
+            fi
+          fi
+
+          echo "✅ Verificación de CHANGELOG superada"
   build-and-test:
     needs: validar-pr
     runs-on: ${{ matrix.os }}
