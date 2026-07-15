@@ -1,7 +1,8 @@
 # Pulso
 
 [![CI](https://github.com/sis-inf/pulso/actions/workflows/ci.yml/badge.svg)](https://github.com/sis-inf/pulso/actions/workflows/ci.yml)
-
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 Plataforma en C++ para gestionar y monitorear información clave de forma eficiente.
 
 ## Inicio Rápido
