@@ -8,6 +8,7 @@
 #include <vector>
 #include <cctype>
 #include <string>
+#include "rutas_proc.hpp"
 
 namespace pulso::collectors {
 
@@ -25,7 +26,7 @@ struct CPUStat {
 
 // Leer primera linea de /proc/stat
 CPUStat leerCPU() {
-    std::ifstream file("/proc/stat");
+    std::ifstream file(pulso::platform::linux_platform::RUTA_PROC_STAT);
 
     if (!file.is_open()) {
         throw ErrorRecoleccion("No se pudo abrir /proc/stat");
@@ -66,7 +67,7 @@ double calcularUso(const CPUStat& a, const CPUStat& b) {
 
 // Contar cores CPU
 int contarCores() {
-    std::ifstream file("/proc/stat");
+    std::ifstream file(pulso::platform::linux_platform::RUTA_PROC_STAT);
 
     if (!file.is_open()) {
         throw ErrorRecoleccion("No se pudo abrir /proc/stat");

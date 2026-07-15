@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <ctime>
+#include "rutas_proc.hpp" 
 
 namespace pulso::platform::linux_platform {
 
@@ -11,15 +12,15 @@ std::string CollectorMemoryLinux::nombre() const {
 }
 
 std::vector<pulso::core::Metrica> CollectorMemoryLinux::recolectar() {
-    // /proc/meminfo tiene el formato:
+    // pulso::platform::linux_platform::RUTA_PROC_MEMINFO tiene el formato:
     //   FieldName:   <valor> kB
     // Se leen línea por línea buscando MemTotal y MemAvailable.
     // Ambos campos están presentes en cualquier kernel Linux >= 3.14.
 
-    std::ifstream file("/proc/meminfo");
+    std::ifstream file("pulso::platform::linux_platform::RUTA_PROC_MEMINFO");
     if (!file.is_open()) {
         throw pulso::collectors::ErrorRecoleccion(
-            "No se pudo abrir /proc/meminfo"
+            "No se pudo abrir pulso::platform::linux_platform::RUTA_PROC_MEMINFO"
         );
     }
 
@@ -46,12 +47,12 @@ std::vector<pulso::core::Metrica> CollectorMemoryLinux::recolectar() {
 
     if (memTotalKB < 0) {
         throw pulso::collectors::ErrorRecoleccion(
-            "No se encontró el campo MemTotal en /proc/meminfo"
+            "No se encontró el campo MemTotal en pulso::platform::linux_platform::RUTA_PROC_MEMINFO"
         );
     }
     if (memAvailableKB < 0) {
         throw pulso::collectors::ErrorRecoleccion(
-            "No se encontró el campo MemAvailable en /proc/meminfo"
+            "No se encontró el campo MemAvailable en pulso::platform::linux_platform::RUTA_PROC_MEMINFO"
         );
     }
 

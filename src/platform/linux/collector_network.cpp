@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <ctime>
+#include "rutas_proc.hpp"
 
 namespace pulso::platform::linux_platform {
 
@@ -12,14 +13,14 @@ std::string CollectorNetworkLinux::nombre() const {
 }
 
 /**
- * Lee /proc/net/dev y suma los contadores de todas las interfaces
+ * Lee pulso::platform::linux_platform::RUTA_PROC_NET_DEV y suma los contadores de todas las interfaces
  * excepto la interfaz loopback ("lo").
  *
  * Retorna métricas acumuladas de recepción y transmisión expresadas
  * en bytes.
  */
 std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
-    // /proc/net/dev tiene dos líneas de cabecera antes de los datos:
+    // pulso::platform::linux_platform::RUTA_PROC_NET_DEV tiene dos líneas de cabecera antes de los datos:
     //
     //   Inter-|   Receive                                                |  Transmit
     //    face |bytes    packets errs drop fifo frame compressed multicast|bytes    ...
@@ -33,10 +34,10 @@ std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
     //   0  → rx_bytes
     //   8  → tx_bytes
 
-    std::ifstream file("/proc/net/dev");
+    std::ifstream file("pulso::platform::linux_platform::RUTA_PROC_NET_DEV");
     if (!file.is_open()) {
         throw pulso::collectors::ErrorRecoleccion(
-            "No se pudo abrir /proc/net/dev"
+            "No se pudo abrir pulso::platform::linux_platform::RUTA_PROC_NET_DEV"
         );
     }
 
@@ -45,7 +46,7 @@ std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
     for (int i = 0; i < 2; ++i) {
         if (!std::getline(file, linea)) {
             throw pulso::collectors::ErrorRecoleccion(
-                "Formato inesperado en /proc/net/dev: cabecera incompleta"
+                "Formato inesperado en pulso::platform::linux_platform::RUTA_PROC_NET_DEV: cabecera incompleta"
             );
         }
     }
@@ -86,7 +87,7 @@ std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
         // Columna 0: rx_bytes
         if (!(iss >> rx_bytes)) {
             throw pulso::collectors::ErrorRecoleccion(
-                "Formato inesperado en /proc/net/dev: no se pudo leer rx_bytes"
+                "Formato inesperado en pulso::platform::linux_platform::RUTA_PROC_NET_DEV: no se pudo leer rx_bytes"
                 " para la interfaz " + iface
             );
         }
@@ -96,7 +97,7 @@ std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
         for (int i = 0; i < 7; ++i) {
             if (!(iss >> campo)) {
                 throw pulso::collectors::ErrorRecoleccion(
-                    "Formato inesperado en /proc/net/dev: campos RX incompletos"
+                    "Formato inesperado en pulso::platform::linux_platform::RUTA_PROC_NET_DEV: campos RX incompletos"
                     " para la interfaz " + iface
                 );
             }
@@ -106,7 +107,7 @@ std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
         long long tx_bytes = 0;
         if (!(iss >> tx_bytes)) {
             throw pulso::collectors::ErrorRecoleccion(
-                "Formato inesperado en /proc/net/dev: no se pudo leer tx_bytes"
+                "Formato inesperado en pulso::platform::linux_platform::RUTA_PROC_NET_DEV: no se pudo leer tx_bytes"
                 " para la interfaz " + iface
             );
         }
@@ -118,7 +119,7 @@ std::vector<pulso::core::Metrica> CollectorNetworkLinux::recolectar() {
 
     if (!hay_interfaces) {
         throw pulso::collectors::ErrorRecoleccion(
-            "No se encontraron interfaces de red activas en /proc/net/dev"
+            "No se encontraron interfaces de red activas en pulso::platform::linux_platform::RUTA_PROC_NET_DEV"
         );
     }
 
