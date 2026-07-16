@@ -24,3 +24,12 @@ jobs:
 
       - name: Análisis de CodeQL
         uses: github/codeql-action/analyze@v4
+
+      - name: Escaneo de dependencias con OSV-Scanner
+        uses: google/osv-scanner-action/scan@v1
+        with:
+          scan-args: |-
+            --recursive
+            --severity=HIGH,CRITICAL
+            .
+            

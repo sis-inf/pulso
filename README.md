@@ -1,5 +1,8 @@
 # Pulso
 
+[![CI](https://github.com/sis-inf/pulso/actions/workflows/ci.yml/badge.svg)](https://github.com/sis-inf/pulso/actions/workflows/ci.yml)
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 Plataforma en C++ para gestionar y monitorear información clave de forma eficiente.
 
 ## Inicio Rápido
@@ -86,6 +89,80 @@ En Windows:
 ```bash
 pulso.exe
 ```
+## Compilación rápida
+
+```bash
+cmake -S . -B build
+make -C build
+./build/pulso
+```
+
+Para una guía completa de instalación consulte:
+
+[docs/instalacion.md](docs/instalacion.md)
+
+---
+
+## Compilación con AddressSanitizer
+
+AddressSanitizer (ASAN) es una herramienta para detectar errores de memoria como accesos inválidos, leaks de memoria, y otros problemas. Es más rápido que Valgrind y ideal para desarrollo.
+
+### Compilar tests con ASAN
+
+```bash
+cmake -S . -B build -DBUILD_TESTS=ON -DBUILD_WITH_ASAN=ON
+cmake --build build
+```
+
+### Ejecutar tests con ASAN
+
+```bash
+cd build
+ctest
+```
+
+O ejecutar un test específico:
+
+```bash
+./build/bin/test_types
+./build/bin/test_config
+./build/bin/test_storage
+```
+
+> [!NOTE]
+> AddressSanitizer solo se aplica a los tests. El build de producción no incluye los flags de ASAN para mantener el rendimiento.
+
+---
+
+## Ejemplo de salida
+
+Ejecutar:
+
+```bash
+./build/pulso --once --format json
+```
+
+Salida:
+
+```json
+{
+  "status": "OK",
+  "cpu": {
+    "usage_percent": 23
+  },
+  "memory": {
+    "usage_percent": 40
+  },
+  "disk": {
+    "usage_percent": 47
+  },
+  "network": {
+    "status": "connected"
+  }
+}
+```
+
+---
 
 ---
 ## Ejemplo basico de uso esperado
@@ -228,7 +305,16 @@ archivos objeto (`.o`) en `build/`.
 
 
 ## Documentación
+
 Ver la carpeta [docs/](docs/)
+
+Guía completa de instalación:
+
+## Documentación
+
+[Índice General de la Documentación](docs/indice-general.md)
+
+[docs/instalacion.md](docs/instalacion.md)
 
 ## Contribuir
 Ver [CONTRIBUTING.md](CONTRIBUTING.md)
