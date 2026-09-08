@@ -20,7 +20,6 @@ Salida esperada:
 Estado del sistema: OK
 ```
 
-
 ## ¿Qué es?
 
 Pulso es una aplicación desarrollada en C++ que permite gestionar y visualizar información relevante de manera centralizada. Está pensada para ofrecer alto rendimiento y control directo sobre los recursos del sistema.
@@ -315,7 +314,6 @@ la última build, gracias al seguimiento de dependencias de Make sobre los
 archivos objeto (`.o`) en `build/`.
 ---
 
-
 ## Documentación
 
 Ver la carpeta [docs/](docs/)
@@ -333,4 +331,3 @@ Ver [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Licencia
 MIT — ver [LICENSE](LICENSE)
-
