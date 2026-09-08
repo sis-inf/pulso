@@ -46,10 +46,18 @@ Gracias a su implementación en C++, Pulso permite una ejecución más rápida y
 ## Instalación
 
 **Requisitos del sistema**
-- Sistema operativo: Windows, Linux o macOS
+- Sistema operativo: **Linux (Kernel 5.4+)**, **Windows 10/11** o **macOS 12+**
 - Compilador de C++ (GCC, Clang o MSVC)
 - CMake (recomendado)
 - Git
+
+### Soporte de Plataformas
+
+| Sistema Operativo | Estado de Soporte | Colectores de Métricas |
+| :--- | :---: | :---: |
+| **Linux (Kernel 5.4+)** | Soporte Pleno | 100% Funcional |
+| **Windows 10/11** | Soporte Pleno | 100% Funcional |
+| **macOS 12+** | Soporte Pleno | 100% Funcional |
 
 ### Pasos básicos
 
@@ -269,6 +277,10 @@ project/
 ---
 
 ## ✨ Características
+
+### 🌐 Soporte Multiplataforma
+- Compatibilidad plena y nativa con **Linux**, **Windows** y **macOS**.
+- Colectores de métricas unificados sin pérdida funcional.
 
 ### 📊 Métricas monitoreadas
 - CPU
